@@ -50,4 +50,12 @@ describe Bot do
     bot0.should == bot0
     bot1.should_not == bot0
   end
+
+  it "should add itself to a registry of bots, indexed by name" do
+    bot0 = Bot.new
+    bot1 = Bot.new
+
+    Bot.find_by_name("bot-0").should == bot0
+    Bot.find_by_name("bot-1").should == bot1
+  end
 end
