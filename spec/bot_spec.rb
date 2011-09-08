@@ -8,9 +8,9 @@ describe Bot do
   end
 
   it "should be able to uniquely identify itself amongst several bots" do
+    bot0 = Bot.new
     bot1 = Bot.new
-    bot2 = Bot.new
-    bot1.name.should_not == bot2.name
+    bot0.name.should_not == bot1.name
   end
 
   it "should be able to compare itself to another bot, and tell me if they're the same" do
