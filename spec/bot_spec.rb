@@ -7,6 +7,11 @@ describe Bot do
     bot.name.should_not be_empty
   end
 
+  it "should allow me to change it's name" do
+    bot = Bot.new
+    bot.name = "test"
+  end
+
   it "should be able to return a count of all the bots in existence" do
     Bot.new
     Bot.count.should == 1
