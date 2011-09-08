@@ -22,6 +22,7 @@ describe Bot do
     Bot.new
     Bot.count.should == 2
   end
+
   it "should be able to reset it's knowledge of all bots" do
     Bot.new
     Bot.new
