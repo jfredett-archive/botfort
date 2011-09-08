@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe Bot do
+  after :each do
+    Bot.clear
+  end
+
 
   it "should have a name" do
     bot = Bot.new
