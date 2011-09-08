@@ -25,6 +25,15 @@ describe Bot do
     Bot.clear
     Bot.count.should == 0
   end
+
+  it "should be able to identify itself independent of it's name" do
+    bot0 = Bot.new
+    bot1 = Bot.new
+    bot0.name = "test"
+    bot1.name = "test"
+    bot0.should_not == bot1
+  end
+
   it "should be able to uniquely identify itself amongst several bots" do
     bot0 = Bot.new
     bot1 = Bot.new
