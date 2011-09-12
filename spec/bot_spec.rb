@@ -61,6 +61,9 @@ describe Bot do
 
   #it "should have a location"
   #it "should be able to move to a location"
+  it "should be able to track it's health" do
+    @bot1.health.should_not be_nil
+  end
   #it "should have health"
   #it "should be able to track it's health"
   #it "should be able to perform actions"

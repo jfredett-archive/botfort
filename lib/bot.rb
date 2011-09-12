@@ -3,9 +3,13 @@ class Bot
 
   def initialize
     @name = assigned_name
+    @health = 1
     register
   end
 
+  def health
+    @health
+  end
   def self.find_by_name(bot_name)
     @@bot_registry[bot_name] 
   end
