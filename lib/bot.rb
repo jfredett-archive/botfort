@@ -1,5 +1,5 @@
 class Bot 
-  attr_accessor :name
+  attr_accessor :name, :health
 
   def initialize
     @name = assigned_name
@@ -7,14 +7,9 @@ class Bot
     register
   end
 
-  def health
-    @health
-  end
-
   def hurt(amt)
     @health -= amt 
   end
-
 
   def self.find_by_name(bot_name)
     @@bot_registry[bot_name] 
@@ -28,6 +23,7 @@ class Bot
   def self.count
     @@bot_number 
   end
+
 
   private 
 

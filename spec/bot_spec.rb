@@ -69,6 +69,12 @@ describe Bot do
       @bot1.hurt(1)
       @bot1.health.should be < orig_health
     end
+    it "should let me set it's health" do
+      @bot1.health = 100
+      @bot1.health.should == 100
+      @bot1.health = 1000
+      @bot1.health.should == 1000
+    end
   end
   #it "should have a location"
   #it "should be able to move to a location"
