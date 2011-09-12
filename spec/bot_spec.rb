@@ -86,6 +86,11 @@ describe Bot do
     it "should have a location" do
       @bot1.location.should_not be_nil
     end
+    it "should be able to move to a new, random location" do
+      old_location = @bot1.location
+      @bot1.move
+      old_location.should_not == @bot1.location
+    end
 
   end
 
