@@ -7,21 +7,21 @@ class Bot
   end
 
   def self.find_by_name(bot_name)
-    @@bot_registry[bot_name]
+    @@bot_registry[bot_name] 
   end
 
   def self.clear
-    @@bot_number = -1
+    @@bot_number = 0 
     @@bot_registry = {}
   end
 
   def self.count
-    @@bot_number + 1
+    @@bot_number 
   end
 
-  private
+  private 
 
-  @@bot_number = -1
+  @@bot_number = 0 
   def assigned_name
     @@bot_number += 1
     "bot-#{@@bot_number}"
