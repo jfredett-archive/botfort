@@ -10,6 +10,12 @@ class Bot
   def health
     @health
   end
+
+  def hurt(amt)
+    @health -= amt 
+  end
+
+
   def self.find_by_name(bot_name)
     @@bot_registry[bot_name] 
   end
