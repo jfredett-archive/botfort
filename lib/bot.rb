@@ -7,6 +7,10 @@ class Bot
     register
   end
 
+  def location
+    return 1
+  end
+
   def dead?
     @health <= 0
   end
@@ -27,7 +31,6 @@ class Bot
   def self.count
     @@bot_number 
   end
-
 
   private 
 
