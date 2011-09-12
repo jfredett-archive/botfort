@@ -75,6 +75,11 @@ describe Bot do
       @bot1.health = 1000
       @bot1.health.should == 1000
     end
+
+    it "should be able to tell me if it's dead" do
+      @bot1.hurt(@bot1.health * 2)
+      @bot1.should be_dead
+    end
   end
   #it "should have a location"
   #it "should be able to move to a location"

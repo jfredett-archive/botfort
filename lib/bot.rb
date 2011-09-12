@@ -7,6 +7,10 @@ class Bot
     register
   end
 
+  def dead?
+    @health <= 0
+  end
+
   def hurt(amt)
     @health -= amt 
   end
