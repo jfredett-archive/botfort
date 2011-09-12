@@ -59,16 +59,19 @@ describe Bot do
     end
   end
 
+  context "health" do
+    it "should be able to track it's health" do
+      @bot1.health.should_not be_nil
+    end
+
+    it "should be able to lose health" do
+      orig_health = @bot1.health
+      @bot1.hurt(1)
+      @bot1.health.should be < orig_health
+    end
+  end
   #it "should have a location"
   #it "should be able to move to a location"
-  it "should be able to track it's health" do
-    @bot1.health.should_not be_nil
-  end
-  it "should be able to lose health" do
-    orig_health = @bot1.health
-    @bot1.hurt(1)
-    @bot1.health.should be < orig_health
-  end
   #it "should have health"
   #it "should be able to track it's health"
   #it "should be able to perform actions"
