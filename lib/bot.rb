@@ -9,11 +9,11 @@ class Bot
   end
 
   def location
-    @location
+    @location 
   end
 
   def move
-    @location += 1
+    @location += 1 
   end
 
   def dead?

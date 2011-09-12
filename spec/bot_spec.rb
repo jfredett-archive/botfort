@@ -60,7 +60,7 @@ describe Bot do
   end
 
   context "health" do
-    it "should be able to track it's health" do
+    it "should be able to track it's health" do 
       @bot1.health.should_not be_nil
     end
 
@@ -69,6 +69,7 @@ describe Bot do
       @bot1.hurt(1)
       @bot1.health.should be < orig_health
     end
+
     it "should let me set it's health" do
       @bot1.health = 100
       @bot1.health.should == 100
@@ -81,21 +82,16 @@ describe Bot do
       @bot1.should be_dead
     end
   end
-  #it "should have a location"
+
   context "movement and location" do
-    it "should have a location" do
+    it "should have a location" do 
       @bot1.location.should_not be_nil
     end
+    
     it "should be able to move to a new, random location" do
       old_location = @bot1.location
       @bot1.move
       old_location.should_not == @bot1.location
     end
-
   end
-
-  #it "should be able to move to a location"
-  #it "should have health"
-  #it "should be able to track it's health"
-  #it "should be able to perform actions"
 end
