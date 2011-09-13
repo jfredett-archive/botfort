@@ -4,9 +4,10 @@ class Location
   end
 
   def coordinates
+    @coords
   end
 
   def ==(other_loc)
-    self.coordinates == other_loc.coordinates
+    self.coordinates.zip(other_loc.coordinates).inject(true) { |a,v| a && (v.first == v.last) }
   end
 end
