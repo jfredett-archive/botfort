@@ -4,16 +4,16 @@ class Bot
   def initialize
     @name = assigned_name
     @health = 1
-    @location = 1
+    @location = Location.new
     register
   end
 
   def location
-    @location 
+    @location
   end
 
   def move
-    @location += 1 
+    @location.move
   end
 
   def dead?

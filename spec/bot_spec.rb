@@ -89,9 +89,9 @@ describe Bot do
     end
     
     it "should be able to move to a new, random location" do
-      old_location = @bot1.location
+      old_location = @bot1.location.coordinates
       @bot1.move
-      old_location.should_not == @bot1.location
+      old_location.should_not == @bot1.location.coordinates
     end
   end
 end
