@@ -1,10 +1,11 @@
 class Location
   def initialize(x = 0, y = 0)
-    @coords = [ x, y ]  
+    @x_coord = x
+    @y_coord = y
   end
 
   def coordinates
-    @coords
+    [ @x_coord , @y_coord ] 
   end
 
   def ==(other_loc)
