@@ -5,4 +5,8 @@ class Location
 
   def coordinates
   end
+
+  def ==(other_loc)
+    self.coordinates == other_loc.coordinates
+  end
 end

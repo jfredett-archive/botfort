@@ -7,4 +7,8 @@ describe Location do
     Location.new(1,2) # will fail if this raises an exception
     #should_not raise_exception seems to be broken?
   end
+
+  it "should be equal to other locations with the same coordinate representation" do 
+    Location.new(1,2).should == Location.new(1,2)
+  end
 end
