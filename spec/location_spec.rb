@@ -3,4 +3,8 @@ describe Location do
     Location.new.should respond_to :coordinates
   end
 
+  it "should allow me to specify it's location using coordinates" do
+    Location.new(1,2) # will fail if this raises an exception
+    #should_not raise_exception seems to be broken?
+  end
 end
