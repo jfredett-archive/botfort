@@ -28,4 +28,5 @@ describe VitalSystem do
     @vitals.should be_alive
     @vitals.should_not be_dead
   end
+
 end

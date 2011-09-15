@@ -66,8 +66,7 @@ describe Bot do
 
     it "should be able to lose health" do
       orig_health = @bot1.health
-      @bot1.hurt(1)
-      @bot1.health.should be < orig_health
+      @bot1.hurt_for(1).health.should be < orig_health
     end
 
     it "should let me set it's health" do
@@ -78,8 +77,12 @@ describe Bot do
     end
 
     it "should be able to tell me if it's dead" do
-      @bot1.hurt(@bot1.health * 2)
-      @bot1.should be_dead
+      @bot1.hurt_for(@bot1.health * 2).should be_dead
+    end
+
+    it "should be alive by default" do
+      @bot1.should be_alive
+      @bot1.should_not be_dead
     end
   end
 
@@ -89,6 +92,7 @@ describe Bot do
     end
     
     it "should be able to move to a new, random location" do
+      #demeter violation here, #location should return a copy of the loc object
       old_location = @bot1.location.coordinates
       @bot1.move
       old_location.should_not == @bot1.location.coordinates

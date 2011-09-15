@@ -2,10 +2,9 @@ require './lib/registerable'
 
 class Bot 
   include Registerable
-  attr_accessor :name, :health
 
   def initialize
-    @health = 1
+    @health = VitalSystem.new
     @location = Location.new
     register
   end
@@ -20,11 +19,24 @@ class Bot
   end
 
   def dead?
-    @health <= 0
+    @health.dead?
   end
 
-  def hurt(amt)
-    @health -= amt 
+  def health
+    @health.health
+  end
+
+  def health=(amt)
+    @health.health = amt
+  end
+
+  def alive?
+    @health.alive?
+  end
+
+  def hurt_for(amt)
+    @health.hurt_for(amt)
+    self
   end
 
 end
