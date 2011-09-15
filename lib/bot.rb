@@ -12,8 +12,9 @@ class Bot
     @location
   end
 
-  def move
-    @location.move
+  def move(dest = {})
+    return @location.move unless dest[:to]
+    @location = dest[:to]
   end
 
   def dead?

@@ -93,5 +93,10 @@ describe Bot do
       @bot1.move
       old_location.should_not == @bot1.location.coordinates
     end
+
+    it "should be able to move from it's current location to another" do
+      @bot1.move(:to => Location[8, 9])
+      @bot1.location.should == Location[8, 9]
+    end
   end
 end
