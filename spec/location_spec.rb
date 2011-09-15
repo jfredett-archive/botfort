@@ -17,4 +17,10 @@ describe Location do
       Location.new(2,3).should_not == Location.new(1,2)
     end
   end
+
+  context "#[]" do
+    it "should behave the same as the #new method" do
+      Location.new(1,2).should == Location[1,2]
+    end
+  end
 end
