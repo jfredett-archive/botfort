@@ -7,6 +7,7 @@ class Location
   def self.[](*args)
     Location.new(*args)
   end
+
   def coordinates
     [ @x_coord , @y_coord ] 
   end
