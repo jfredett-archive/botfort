@@ -16,7 +16,7 @@ Botfort language.
 
 - Each commit must add tests for new features
 
-- Each commit must represent the addition of exactly one feature with
+- Each commit must represent the addition of exactly one feature with (at least)
   exactly one corresponding test.
 
 - Only comment if something is confusing
