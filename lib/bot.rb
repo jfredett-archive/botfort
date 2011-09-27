@@ -10,7 +10,7 @@ class Bot
   end
 
   def location
-    @location
+    @location.copy
   end
 
   def move(dest = {})

@@ -93,9 +93,9 @@ describe Bot do
     
     it "should be able to move to a new, random location" do
       #demeter violation here, #location should return a copy of the loc object
-      old_location = @bot1.location.coordinates
+      old_location = @bot1.location
       @bot1.move
-      old_location.should_not == @bot1.location.coordinates
+      old_location.should_not == @bot1.location
     end
 
     it "should be able to move from it's current location to another" do

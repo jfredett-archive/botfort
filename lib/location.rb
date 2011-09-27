@@ -4,6 +4,10 @@ class Location
     @y_coord = y
   end
 
+  def copy
+    Location.new(*self.coordinates)
+  end
+
   def self.[](*args)
     Location.new(*args)
   end
