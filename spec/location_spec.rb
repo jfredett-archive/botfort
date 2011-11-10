@@ -1,26 +1,16 @@
 describe Location do
+  subject { Location.new(1,2) } 
+
   context "representation and equality" do
-    it "should have a coordinate representation" do
-      Location.new.should respond_to :coordinates
-    end
-
-    it "should allow me to specify it's location using coordinates" do
-      #should_not raise_exception seems to be broken?
-      Location.new(1,2) # will fail if this raises an exception
-    end
-
-    it "should be equal to other locations with the same coordinate representation" do 
-      Location.new(1,2).should == Location.new(1,2)
-    end
-
-    it "should not be equal to other locations with different coordinate representation" do
-      Location.new(2,3).should_not == Location.new(1,2)
-    end
+    it { should respond_to :coordinates } 
+    it { expect { subject.should_not raise_exception } }
+    it { should == Location.new(1,2) } 
+    it { should_not == Location.new(2,3) }
   end
-
+  
   context "#[]" do
-    it "should behave the same as the #new method" do
-      Location.new(1,2).should == Location[1,2]
-    end
+    subject { Location[1,2] }
+    it { expect { subject.should_not raise_exception }} 
+    it { should == Location.new(1,2) }
   end
 end
