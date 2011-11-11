@@ -12,6 +12,10 @@ module Registerable
       @registry = {}
     end
 
+    def delete(name)
+      @registry.reject! { |k,v| k == name } 
+    end
+
     def find_by_name(name)
       @registry[name] 
     end
@@ -36,7 +40,13 @@ module Registerable
     end
   end
 
-  attr_accessor :name
+  attr_reader :name
+
+  def name=(new_name)
+    self.class.delete(name)
+    @name = new_name
+    register
+  end
 
   def register
     @name ||= assigned_name

@@ -2,18 +2,20 @@ require 'spec_helper'
 
 describe Bot do
   before :each do
-    @bot1 = Bot.new
-    @bot2 = Bot.new
+    @bot1 = Bot.new 
+    @bot2 = Bot.new 
   end
 
-  after :each do
-    Bot.clear
-  end
+  after (:each) { Bot.clear } 
+
 
   context "identification" do 
-    it "should have a name" do
-      @bot1.name.should_not be_empty
-    end
+    subject { Bot.new } 
+    it { should respond_to :name } 
+    it { subject.name.should_not be_empty } 
+
+    it { subject.should_not == @bot1 } 
+    it { should == subject } 
 
     it "should allow me to change it's name" do
       @bot1.name = "test"
@@ -23,15 +25,6 @@ describe Bot do
       @bot1.name = "test"
       @bot2.name = "test"
       @bot2.should_not == @bot1
-    end
-    
-    it "should be able to uniquely identify itself amongst several bots" do
-      @bot2.should_not == @bot1
-    end
-
-    it "should be able to compare itself to another bot, and tell me if they're the same" do
-      @bot1.should_not == @bot2
-      @bot2.should == @bot2
     end
   end
 
@@ -57,50 +50,61 @@ describe Bot do
       Bot.find_by_name("bot-1").should == @bot1
       Bot.find_by_name("bot-2").should == @bot2
     end
+
+    it "should update itself in the registry when I change it's name" do
+      bot = Bot.find_by_name("bot-1")
+      bot.name = "foo"
+      expect { Bot.find_by_name("foo") }.should_not raise_error
+      Bot.find_by_name("foo").should_not be_nil
+      bot.should == Bot.find_by_name("foo")
+    end
   end
 
   context "health" do
-    it "should be able to track it's health" do 
-      @bot1.health.should_not be_nil
-    end
+    subject { Bot.new } 
+    it { should respond_to :health }
+    it { subject.health.should_not be_nil } 
 
+    it { should respond_to :hurt_for }
     it "should be able to lose health" do
-      orig_health = @bot1.health
-      @bot1.hurt_for(1).health.should be < orig_health
+      orig_health = subject.health
+      subject.hurt_for(1).health.should be < orig_health
     end
 
     it "should let me set it's health" do
-      @bot1.health = 100
-      @bot1.health.should == 100
-      @bot1.health = 1000
-      @bot1.health.should == 1000
+      subject.health = 100
+      subject.health.should == 100
+      subject.health = 1000
+      subject.health.should == 1000
     end
 
-    it "should be able to tell me if it's dead" do
-      @bot1.hurt_for(@bot1.health * 2).should be_dead
+    it { should respond_to :dead? }
+    it "should die if it is hurt for more than it's remaining health" do
+      subject.hurt_for(subject.health * 2).should be_dead
     end
 
-    it "should be alive by default" do
-      @bot1.should be_alive
-      @bot1.should_not be_dead
-    end
+    it { should be_alive } #FRANKENSTEIN!
+    it { should_not be_dead } #this is equivalent to the above, but worded differently.
   end
 
   context "movement and location" do
+    subject { Bot.new }
+    it { should respond_to :location }
     it "should have a location" do 
-      @bot1.location.should_not be_nil
+      subject.location.should_not be_nil
     end
     
+    it { should respond_to :move } 
     it "should be able to move to a new, random location" do
       #demeter violation here, #location should return a copy of the loc object
-      old_location = @bot1.location
-      @bot1.move
-      old_location.should_not == @bot1.location
+      old_location = subject.location
+      subject.move
+      old_location.should_not == subject.location
     end
 
     it "should be able to move from it's current location to another" do
-      @bot1.move(:to => Location[8, 9])
-      @bot1.location.should == Location[8, 9]
+      subject.move(to: Location[8, 9])
+      subject.location.should == Location[8, 9]
     end
   end
 end
