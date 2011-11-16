@@ -1,7 +1,10 @@
 class Location
+  attr_reader :content
+
   def initialize(x = 0, y = 0)
     @x_coord = x
     @y_coord = y
+    @content = []
   end
 
   def copy
@@ -27,7 +30,4 @@ class Location
     @y_coord += 1
   end
 
-  def content
-    
-  end
 end

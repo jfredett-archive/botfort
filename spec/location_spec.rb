@@ -17,5 +17,6 @@ describe Location do
 
   context "contents of a location" do
     it { should respond_to :content } 
+    its(:content) { should_not be_nil }
   end
 end
