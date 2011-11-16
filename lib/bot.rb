@@ -1,7 +1,11 @@
 require './lib/registerable'
+require 'forwardable'
 
 class Bot 
   include Registerable
+  extend Forwardable
+
+  delegate [:alive?, :dead?, :health, :health=] => :@health 
 
   def initialize
     @health = VitalSystem.new
@@ -18,25 +22,8 @@ class Bot
     @location = dest[:to]
   end
 
-  def dead?
-    @health.dead?
-  end
-
-  def health
-    @health.health
-  end
-
-  def health=(amt)
-    @health.health = amt
-  end
-
-  def alive?
-    @health.alive?
-  end
-
   def hurt_for(amt)
     @health.hurt_for(amt)
     self
   end
-
 end
