@@ -26,8 +26,4 @@ describe VitalSystem do
     subject.hurt_for(subject.health * 2).should be_dead
   end
 
-  it "should be alive by default" do
-    subject.should be_alive
-    subject.should_not be_dead
-  end
 end
