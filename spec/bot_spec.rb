@@ -103,5 +103,9 @@ describe Bot do
       subject.move(to: Location[8, 9])
       subject.location.should == Location[8, 9]
     end
+
+    it "should return itself after it moves" do
+      subject.move(to: Location[8,9]).should == subject
+    end
   end
 end

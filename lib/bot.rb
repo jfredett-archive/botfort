@@ -20,6 +20,7 @@ class Bot
   def move(dest = {})
     return @location.move unless dest[:to]
     @location = dest[:to]
+    self
   end
 
   def hurt_for(amt)
