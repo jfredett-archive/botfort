@@ -14,5 +14,8 @@ describe Location do
     subject { Location[1,2] }
     it { should == loc1 }
   end
+
+  context "contents of a location" do
+    it { should respond_to :content } 
   end
 end

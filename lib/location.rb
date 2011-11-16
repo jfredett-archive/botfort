@@ -26,4 +26,8 @@ class Location
     @x_coord += 1
     @y_coord += 1
   end
+
+  def content
+    
+  end
 end
