@@ -6,9 +6,7 @@ describe VitalSystem do
   it { should be_alive }
   it { should_not be_dead }
 
-  it "should be able to track it's health" do 
-    subject.health.should_not be_nil
-  end
+  its(:health) { should_not be_nil } 
 
   it "should be able to lose health" do
     orig_health = subject.health
