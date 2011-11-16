@@ -90,13 +90,10 @@ describe Bot do
   context "movement and location" do
     subject { Bot.new }
     it { should respond_to :location }
-    it "should have a location" do 
-      subject.location.should_not be_nil
-    end
+    its(:location) { should_not be_nil } 
     
     it { should respond_to :move } 
     it "should be able to move to a new, random location" do
-      #demeter violation here, #location should return a copy of the loc object
       old_location = subject.location
       subject.move
       old_location.should_not == subject.location
