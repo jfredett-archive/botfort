@@ -1,16 +1,18 @@
 describe Location do
-  subject { Location.new(1,2) } 
+  let(:loc1) { Location.new(1,2) }
+  let(:loc2) { Location.new(3,2) }
+  subject { loc1 } 
 
   context "representation and equality" do
     it { should respond_to :coordinates } 
-    it { expect { subject.should_not raise_exception } }
-    it { should == Location.new(1,2) } 
-    it { should_not == Location.new(2,3) }
+
+    it { should == loc1 } 
+    it { should_not == loc2 }
   end
   
   context "#[]" do
     subject { Location[1,2] }
-    it { expect { subject.should_not raise_exception }} 
-    it { should == Location.new(1,2) }
+    it { should == loc1 }
+  end
   end
 end
