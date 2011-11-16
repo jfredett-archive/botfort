@@ -5,7 +5,7 @@ class Location
   end
 
   def copy
-    Location.new(*self.coordinates)
+    Location.new(*coordinates)
   end
 
   def self.[](*args)
@@ -17,7 +17,9 @@ class Location
   end
 
   def ==(other_loc)
-    self.coordinates.zip(other_loc.coordinates).inject(true) { |a,v| a && (v.first == v.last) }
+    coordinates.
+      zip(other_loc.coordinates).
+      inject(true) { |a,v| a && (v.first == v.last) }
   end
 
   def move
