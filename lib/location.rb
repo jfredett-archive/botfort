@@ -1,18 +1,12 @@
 class Location
   attr_reader :content
 
-  def initialize(x = 0, y = 0)
-    @x_coord = x
-    @y_coord = y
-    @content = []
-  end
-
   def copy
     Location.new(*coordinates)
   end
 
   def self.[](*args)
-    Location.new(*args)
+    new(*args)
   end
 
   def coordinates
@@ -28,6 +22,14 @@ class Location
   def move
     @x_coord += 1
     @y_coord += 1
+  end
+
+  private
+
+  def initialize(x = 0, y = 0)
+    @x_coord = x
+    @y_coord = y
+    @content = []
   end
 
 end
