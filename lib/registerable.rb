@@ -20,6 +20,10 @@ module Registerable
       @registry[name] 
     end
 
+    def exists?(name)
+      @registry.keys.include?(name)
+    end
+
     def register(name, instance)
       @registry[name] = instance 
     end
