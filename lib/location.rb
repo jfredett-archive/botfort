@@ -1,22 +1,18 @@
 class Location
   attr_reader :content
+  include Registerable
 
   def copy
     Location.new(*coordinates)
   end
 
   def self.[](*args)
+    return find args if exists? args
     new(*args)
   end
 
   def coordinates
     [ @x_coord , @y_coord ] 
-  end
-
-  def ==(other_loc)
-    coordinates.
-      zip(other_loc.coordinates).
-      inject(true) { |a,v| a && (v.first == v.last) }
   end
 
   def move
@@ -26,10 +22,16 @@ class Location
 
   private
 
+  #used in registration
+  def name
+    coordinates
+  end
+
   def initialize(x = 0, y = 0)
     @x_coord = x
     @y_coord = y
     @content = []
+    register
   end
 
 end

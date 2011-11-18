@@ -10,11 +10,13 @@ describe Location do
     it { should == loc1 } 
 
     it { should_not == loc2 }
-  end
-  
-  context "#[]" do
-    subject { Location[1,2] }
-    it { should == loc1 }
+
+    context "is a flyweight, " do
+      it "should only create each location once" do
+        #we have to do it this way to ensure we compare references
+        Location[1,2].equal?(Location[1,2]).should be_true 
+      end
+    end
   end
 
 
