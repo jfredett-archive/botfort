@@ -16,7 +16,7 @@ module Registerable
       @registry.reject! { |k,v| k == name } 
     end
 
-    def find_by_name(name)
+    def find(name)
       @registry[name] 
     end
 

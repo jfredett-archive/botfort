@@ -47,16 +47,16 @@ describe Bot do
     end
 
     it "should add itself to a registry of bots, indexed by name" do
-      Bot.find_by_name("bot-1").should == @bot1
-      Bot.find_by_name("bot-2").should == @bot2
+      Bot.find("bot-1").should == @bot1
+      Bot.find("bot-2").should == @bot2
     end
 
     it "should update itself in the registry when I change it's name" do
-      bot = Bot.find_by_name("bot-1")
+      bot = Bot.find("bot-1")
       bot.name = "foo"
-      expect { Bot.find_by_name("foo") }.should_not raise_error
-      Bot.find_by_name("foo").should_not be_nil
-      bot.should == Bot.find_by_name("foo")
+      expect { Bot.find("foo") }.should_not raise_error
+      Bot.find("foo").should_not be_nil
+      bot.should == Bot.find("foo")
     end
   end
 
