@@ -20,6 +20,10 @@ class Location
     @y_coord += 1
   end
 
+  def add_content(obj)
+    @content << obj
+  end
+
   private
 
   #used in registration
@@ -33,5 +37,6 @@ class Location
     @content = []
     register
   end
+
 
 end

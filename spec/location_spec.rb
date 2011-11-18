@@ -23,5 +23,11 @@ describe Location do
   context "contents of a location" do
     it { should respond_to :content } 
     its(:content) { should_not be_nil }
+
+    context "when there is a bot at the given location" do
+      let(:bot) { Bot.new }
+      subject { bot.move(to: loc1) ; loc1 }
+      its(:content) { should include bot }
+    end
   end
 end

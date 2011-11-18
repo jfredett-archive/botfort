@@ -107,5 +107,10 @@ describe Bot do
     it "should return itself after it moves" do
       subject.move(to: Location[8,9]).should == subject
     end
+
+    it "should inform the location that it has moved to it" do
+      Location[8,9].should_receive(:add_content).with(subject)
+      subject.move(to: Location[8,9])
+    end
   end
 end
