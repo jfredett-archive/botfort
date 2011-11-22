@@ -65,4 +65,9 @@ describe Location do
       Location[3,2].inspect.should == "(3,2)"
     end
   end
+
+  context "terrain" do
+    it { should respond_to :terrain }
+    its(:terrain) { should be_a Terrain }
+  end
 end

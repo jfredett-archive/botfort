@@ -43,6 +43,10 @@ class Location
   end
   alias_method :inspect, :to_s
 
+  def terrain
+    Terrain.new 
+  end
+
   private
 
   #used in registration
