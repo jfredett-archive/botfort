@@ -11,6 +11,20 @@ class Location
     new(*args)
   end
 
+  def within(r)
+    raise "Must provide a positive whole value for r" unless r >= 0 and r.is_a? Integer
+    coords = []
+    (r+1).times do |i|
+      (r+1).times do |j|
+        coords << Location[@x_coord - i, @y_coord - j]
+        coords << Location[@x_coord + i, @y_coord + j]
+        coords << Location[@x_coord + i, @y_coord - j]
+        coords << Location[@x_coord - i, @y_coord + j]
+      end
+    end
+    coords.uniq! #this whole thing is pretty terrible.
+  end
+
   def coordinates
     [ @x_coord , @y_coord ] 
   end
