@@ -25,19 +25,27 @@ module Registerable
     end
 
     def register(name, instance)
+      name ||= assigned_name
       @registry[name] = instance 
+      name
+    end
+
+    def update_name(old, new)
+      obj = find(old)
+      delete(old)
+      register(new, obj)
     end
 
     def count
       @number 
     end
 
+    private 
+
     def assigned_name
       @number += 1
       "#{basename}-#{@number}"
     end
-
-    private 
 
     def basename
       "bot"
@@ -47,20 +55,10 @@ module Registerable
   attr_reader :name
 
   def name=(new_name)
-    self.class.delete(name)
-    @name = new_name
-    register
+    @name = self.class.update_name(name, new_name)
   end
 
   def register
-    @name ||= assigned_name
-    self.class.register(name, self)
-    @name
-  end
-
-  private 
-
-  def assigned_name
-    self.class.assigned_name
+    @name = self.class.register(name, self)
   end
 end
