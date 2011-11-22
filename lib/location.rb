@@ -24,6 +24,11 @@ class Location
     @content << obj
   end
 
+  def to_s
+    "(#{@x_coord},#{@y_coord})"
+  end
+  alias_method :inspect, :to_s
+
   private
 
   #used in registration

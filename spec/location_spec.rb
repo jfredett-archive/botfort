@@ -30,4 +30,10 @@ describe Location do
       its(:content) { should include bot }
     end
   end
+  describe "#to_s and #inspect" do
+    it "should show the coordinates of the location" do
+      Location[3,2].to_s.should == "(3,2)"
+      Location[3,2].inspect.should == "(3,2)"
+    end
+  end
 end
