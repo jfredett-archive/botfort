@@ -28,4 +28,10 @@ class Bot
     @health.hurt_for(amt)
     self
   end
+
+  private 
+
+  def self.basename
+    "bot"
+  end
 end

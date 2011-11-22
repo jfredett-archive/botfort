@@ -48,7 +48,7 @@ module Registerable
     end
 
     def basename
-      "bot"
+      "entry"
     end
   end
 

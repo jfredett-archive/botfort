@@ -8,7 +8,6 @@ describe Bot do
 
   after (:each) { Bot.clear } 
 
-
   context "identification" do 
     subject { Bot.new } 
     it { should respond_to :name } 
