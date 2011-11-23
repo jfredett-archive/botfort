@@ -1,0 +1,74 @@
+#Actions
+
+A bot can take actions, an action is a block of code which instructs the bot to
+do something. This might be moving, performing some action on the current or
+adjacent location, etc. 
+
+- An action is the sum of two or more actions, or it is a 'primitive' action,
+  eg, movement, construction of an object, etc.
+- An action is specified by a DSL, example follows
+
+    action :example do
+      move abs: 0,0             #move to the location 0,0
+      move 1,-2                 #move up one square, down two squares
+      #execute the action named "cut_tree" -- this may be a built in or a user-defined action
+      cut_tree                  
+      move abs: 0,0             #move to 0,0
+      wait                      #halt actions, report as idle.
+    end
+
+- A bot may be registered with "default" actions which occur in response to an
+  event happening, as follows:
+
+    instinct :flee do
+      if within(5).exists? :enemy 
+        enemy_pos = within(5).find(:enemy)
+        run_from!(*enemy_pos)
+      end
+    end
+
+    action :run_from! do |i,j|
+      #code to run in opposite direction of i,j
+    end
+
+    #alternate syntax?
+
+    instinct :name do
+      when { within(5).exists? :enemy }
+      respond { run_from!( within(5).find(:enemy) ) } #still calls to another action
+    end 
+
+    #alternate alternate, smalltalky
+
+    instinct when: {block}
+             respond: {block}
+
+    #or
+
+    instinct when: {block} do
+      #response
+    end
+            
+
+- Bots may call actions from within other actions -- eg, actions are a monad
+- instincts fire once per turn, preempting any other action that may have been
+  given to the bot.
+- when the game is running, it should be possible to pipe commands like:
+
+    bot-name:action-name:arg1:arg2:argN
+
+  which would have the given bot execute the given action
+
+- blocks should happily deal with arguments
+
+The idea is to basically have each bot be a scriptable, semi-self aware little
+automaton, to whom we provide commands through a variety of methods. 
+
+## Message priority
+
+a message should have associated with it some notion of "priority" -- it should
+also include it's sender (and it's originator), this will allow for conditional
+ignorance -- eg, a bot could only listen to orders from certain bots, or any
+message with "high" priority.
+
+

@@ -1,0 +1,25 @@
+#multiplayer
+
+Multiplayer could work in a couple ways.
+
+Already, the concurrency model aims toward a multi-process setup. Wherein one
+central process simply manages keeping track of work to be processed, and many
+slave services process the queue. Multiplayer needs to be no different. Ideally,
+multiple players could cooperatively manage many bots across multiple machines
+with a single central "master" on one or the other machine. Or, indeed, that
+central server could be sharded across several machines. Ideally, it would be
+trivial to shard existing worlds to many machines, or combine worlds together.
+
+To wit, combining worlds is conceptually simple to explain in the context of the
+game. The premise of the game is that bots are a simulation existing in a
+simulated environment (nevermind the fact that that is true about the game
+proper, I mean that, within the context of the game, the bots 'know' they're in
+a simulation). Bots may therefore build "SSH Tunnels" to other bot simulations,
+potentially sharing resources (both computational and in-game) through that
+tunnel. Bots could pass through the tunnel, but must obey any changes in the
+"physics" (see the discussion about the "speed of light" in (bot.mkd)[docs/bot.mkd])
+on the other side of the tunnel.
+
+if the ssh tunnel is destroyed during this session (in-game), then any bot on
+the other side is lost to the player who sent it, and will run around rampant on
+the other side.

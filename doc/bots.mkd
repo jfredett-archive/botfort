@@ -1,0 +1,269 @@
+#Bots
+
+A bot is a little automaton, it is capable of performing
+(actions)[doc/Actions.mkd], both primitive and scripted by the player.
+
+- The bot should be controllable directly and indirectly by the player (see
+  (actions)[doc/Actions.mkd] for more details, including "instincts" and
+  "actions")
+
+- The bot should be aware of his health status, position in space, and other
+  useful data items.
+
+- The bot should be able to send messages to other bots, but limited somehow by
+  his phyiscal distance to the other bot, taking into account obstacles. For
+  instance, consider the following diagram, where `.` is free space, `#` is a
+  wall, and any capital letter is a unique bot.
+
+  ......A#B......
+  .......#.......
+  .......#.......
+  ...............
+  .......#.......
+  .......#.......
+  .......#.......
+
+  The distance between A and B is _not_ 3 spaces (inclusive), it is in fact 8
+  spaces, since "light" cannot travel between walls. The "rate of transmission"
+  is then based on some "speed of light", so if the speed of light was 5 spaces 
+  per turn, then any transmission from A to B would take at least 2 turns --
+  during which B might move, yeilding the potential to have the message need to
+  recalculate how many more turns it would take to arrive. (Messages should be
+  objects which do path calculation).
+
+  It is presumed that bots do not exceed the S.O.L., this presumption may be fun
+  to violate.
+ 
+  This message-passing system would (ideally) allow for a sort of
+  pseudo-object-oriented approach to bots via complex instincts which involve
+  message passing, for instance, I might register an instinct with all bots
+  which says "Shout to nearest bot when I see an enemy" -- which sends the
+  message `:enemy_sighted` with the enemy's position and turn number to the
+  nearest bot, and then tells the bot to only re-report the enemy if it moves 
+  past some threshold or whatever. The message then propagates through the
+  network (perhaps with some decay, so that needless messages don't clog bot CPU
+  time) which then triggers different responses based on how the bot would react
+  to hearing that message.
+
+
+## CPU time / limited resources / upkeep
+
+to mitigate the tendency of a player to happily create hundreds of bots all
+sharing infinite amounts of information, a bot should have associated
+limitations, in particular, three limitations should exist:
+
+- Limited resources + cost to create
+
+A bot should require resources based on the "parts" that make it up. For
+instance, a bot should require X units of silicon to make, as well as Y units of
+steel. These items could then be improved through manufacturing processes
+implemented by the bots. The same resources would be used to build structures.
+
+a bot would not make use of any raw material directly, rather, it would require
+refined parts -- which may be themselves upgraded (infinitely, but with
+exponential cost). For instance, a basic bot might consist of three wheels, a
+wooden chassis, a motor and a cheap CPU, the wheels could be "basic wooden
+wheels" which are simply cut from wood, as would the chassis. The CPU and motor
+would require silicon and metal. The initial phase of the game would revolve
+around setting up resource supply lines to get these resources and organize them
+for building infrastructure
+
+- CPU Time
+
+Cheaper CPUs would provide less processing power, and therefore allow for fewer
+messages/instincts to be processed per turn. This introduces a careful balance,
+and encourages division of labor. For instance, it would be wise to produce (at
+least at first), mostly cheap bots which perform one function fairly stupidly.
+For instance, you might have a "minerbot" which gets metal and stores it in a
+stockpile, and a "lumberbot" which does the same for wood. They pass no
+messages, they do not have instincts, they use the bare minimum parts and simply
+operate cheaply to acquire resources. 
+
+Afterward, you might build a few basic scout-bots, which patrol a given route,
+and send a message to all bots which causes them to run to safety (this may be
+an instinct given even to the stupidest of bots) and lock the doors once
+everyone is safe, until the threat passes. Later, you might implement sentry
+bots with weapons to patrol and proactively deal with threats, manager bots to
+optimize how other bots communicate. You might build a new resource gatherer bot
+which talks to a manager to coordinate what areas to mine from, etc.
+
+The more messages that fly around, however, the more processing units you need
+to use. Ignoring a message is always 0-cost, but other messages cost more CPU
+power. a "move" message, for instance, might cost 1 unit, but it might also
+"block" until the bot has completed it (which might be more than 1 turn,
+resetting the usage cache). Certain processes could be marked as "asynchronous"
+(for instance, message-rebroadcast), and take place during a "blocking" event.
+Thus it becomes beneficial (for optimization) to create bots who's job it is is
+to pass messages along to other bots.
+
+- upkeep
+
+Suitably trivial bots should have 0 upkeep -- the initial 'minerbot' we
+described would be, essentially, free. However, higher tech-level bots would
+require more upkeep, over time, their systems would degrade and need
+replacement. This would (potentially) also allow for "planned obsoletion" or
+more euphemistically (or perhaps, more accurately) "upgrading". A bot's
+component decay would be based on how often that component is "used" -- for
+instance, a bot who is relatively "dumb" might have near-0 decay on it's
+processor, but if it had to do alot of running, it would have high decay on it's
+wheels. Different parts would contribute to different "stats" for the bot, which
+would in turn decay in concordance with the component. Eventually -- upon
+reaching a state of total decay, a part would "break". 
+
+In an interesting world, it might be possible for a bot to carry and
+be-capable-of self-repair, or at least, emergency-self-extraction. For instance,
+if I have a bot who's instinct is, upon total-decay of a particular component,
+to replace that component from it's cargo, and flee to some pre-determined
+location to retrieve new "spare parts" -- or even to replace it's "spare CPU",
+that would be pretty awesome.
+
+##Fighting and defense
+
+Bots will fight with... stuff. Animals or other bots might present. Whatever the
+enemy, the system is still the same. The bot has a chassis, the chassis has some
+sort of "structural integrity" -- possibly enhanced by shields/whatever -- which
+can be damaged by mobs. when the structural integrity of the chassis has been
+reduced to 0, the inner workings are expose, these also have structural
+integrity, but when they break, they cease their function, thus rendering the
+victim incapable of survival. 
+
+When the chassis breaks the cargo may start falling out.
+
+Depending on the bot, it may be able to continue if different parts of the
+innerworkings are still present. For instance, a 4-wheeled bot can probably limp
+away on 3, or even 2 wheels. 
+
+There should be potential for safeguarding internal components separately. Eg, I
+have an armored CPU area, etc.
+
+##Components
+
+I've already mentioned components in the "Upkeep" section, but generally, there
+are two kinds of components -- primary components (like CPUs, Chassis, Wheels,
+etc), and secondary components (Fans, Heatsinks, etc). 
+
+Primary components should be kept relatively few, perhaps 5-7 total components.
+Not all are necessary for every bot, for instance, a bot might not need wheels
+if it is to only serve as a re-broadcast tower. Primary components consist of
+two primary attributes, "contributions" and "degradations" -- the former specify
+what things they "do" for a bot (eg, a CPU can process `n` units per turn), the
+latter specify how the item degrades. The latter *should* in theory boil down to
+one equation based on simple statistics of the item + it's secondary components.
+
+Primary components have a "degradation factor" and a "total-decay" value, the
+latter specifies the total amount of degradation points that a unit can
+withstand before breaking. The former specifies the effect it has on it's
+primary function. 
+
+Secondary components are "attached" to certain "types" of components. For
+instance, a fan or heatsink might be attached to any "heat" producing component
+(IDEA: including other secondary components?) Secondary components alter bits of
+their primary component's, either enhancing characteristics (eg, a ALU might
+decrease the cost of performing certain operations), or mitigating degredation
+(eg, a Fan would reduce the wear modifier due to heat). Secondary components
+also might come with drawbacks (an ALU might reduce the overall CPU power by
+some constant, but it's savings would be felt in a specific kind of bot). 
+
+##Rampancy
+
+A bot, especially old bots, have the potential to go "rampant" -- what this
+means varies, but it generally falls into one of a few categories. In
+particular:
+
+- A bot goes apeshit, starts attacking other bots, shows up as an enemy.
+
+- A bot starts lying, when he recieves messages, sometimes he alters the message
+  he sends out with one he sent out before, or subtly changes what the arguments
+  are, etc. Occasionally he sends out a message for no reason.
+
+- A bot gets paranoid, starts running at high speed in different directions
+
+- A bot becomes lethargic, and simply stops moving, or moves only very slowly.
+
+- A bot starts copying the actions and instincts of some other bot, mod some
+  minor mutations
+
+When a bot goes rampant, it is up to the player to decide what to do. In some
+cases, it is harmless, in others, deadly. 
+
+##Possible components for bots:
+
+I suspect this list will grow.
+
+### Obvious stuff
+
+- CPU
+  * contributes to:
+    - CPU processing power / turn
+  * degrades based on:
+    - process units used / turn
+    - "heat" 
+      ** eg, 
+          load = process units used / process units max 
+          heat = average load over `n` turns, adjusting for falloff
+
+        That is, the more of a CPU you use for longer should increase the wear
+        on the CPU
+
+- Wheels/other movement devices
+  * contributes to:
+    - Speed of movement
+    - Terrain over which one could travel
+  * degrades based on:
+    - how much movement
+    - what kind of terrain it is travelling over
+
+- Chassis
+  * contributes to:
+    - cargo space
+    - defense rating
+  * degrades based on:
+    - damage done by enemies
+    - cargo weight carried over distance modified by terrain
+      ** eg, `sum(weight * cost(square)) for each square travelled`
+
+- Fans/Heatsinks 
+  * contributes to:
+    - Reduction in CPU degradation
+  * degrades based on:
+    - Constant per turn, or
+    - based on CPU heat
+
+- Various Co-processors
+  * contributes to:
+    - some particular "type" of computation, reducing the cost of computation by
+      a percentage, but decreasing the overall total number of computations
+      performable by some amount.
+  * degrades based on:
+    - CPU usage + extra when it is actually being used
+
+- Scanners 
+  * contributes to:
+    - Line-of-sight range, ability to see through obstacles, etc depending on
+      type
+  * degrades based on:
+    - Constant over time
+
+- Weapons 
+  * contributes to:
+    - Killing stuff, does not use ammo naturally, possible secondary component
+      is secondary "ammo" items which enhance damage
+  * degrades based on:
+    - Use
+
+- Battery 
+  * contributes to:
+    - general operation, limiter for number of components (need batteries to use
+      components
+  * degrades based on:
+    - rate dependent on number of batteries on the device. more batteries ==
+      faster decay
+    
+  
+---schema---
+- 
+  * contributes to:
+  * degrades based on:
+
+
+
