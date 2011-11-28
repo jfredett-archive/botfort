@@ -40,10 +40,12 @@ adjacent location, etc.
 
     #alternate alternate, smalltalky
 
-    instinct when: {block}
+    #not possible w/o using stabbys
+    instinct when: {block} 
              respond: {block}
 
     #or
+    #same as above, not w/o stabbys
 
     instinct when: {block} do
       #response
@@ -63,6 +65,10 @@ adjacent location, etc.
 
 The idea is to basically have each bot be a scriptable, semi-self aware little
 automaton, to whom we provide commands through a variety of methods. 
+
+- action! to override primitive actions
+
+
 
 ## Message priority
 

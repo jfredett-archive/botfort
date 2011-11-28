@@ -1,0 +1,73 @@
+#Process model
+
+This sort of describes an ideal process model. The first iteration will likely
+consist of only the Server component, but slowly fracturing it to this model (I
+think) will improve performance through parallelism. Ideally, this sort of thing
+could allow game processing to take place in a map-reduce style environment, or
+at the very least on the cloud on full communicating instances.
+
+##Client, Server, Slave, World
+
+###Server
+
+The server is the god of game-state. It holds the canonical representation of
+all the active bots, as well as the queue of actions to process.
+
+It also manages concurrency handling. For instance, say that we always calculate
+combat resolution first, but there is a combat and move WU for the same bot in
+the system. Then the WU's for that bot should be locked whenever a slave is
+executing them.
+
+Given the presence of sharding (in the database sense) servers, it may be that
+we need a two-level heirarchy, one for managing concurrency (a global lock
+store), and one for the provision of labor to the slave processes.
+
+###World 
+
+The world is the god of the game-world. It abstracts the representation of the
+game world, it is responsible for providing chunks of the game world to slaves
+for pathing and path-cost calculations.
+
+###Slave
+
+The worker, This object is isolated to a single process, and is responsible for
+calculating the results of an action being taken, it should handle one of
+several kinds of tasks:
+
+- Pathing/Path-cost
+
+Talk to the Server-god, get a "move" work unit, get the coordinates of the bot
+in the game world, get the desired coordinates for the bot, retrieve data from
+the World-god and calculate a path and it's cost for the bot. 
+
+- Message sending
+
+Similar to pathing, but here we don't have path-cost to worry about, but we only
+move <speed_of_light> units per turn, so we can't just calculate this once.
+Perhaps this model (calculate a path which is optimal for <max_speed> of the
+object moving and then registering another WU to move the rest of the way, would
+help eliminate some complexity in pathfinding.
+
+- Combat resolution 
+
+Execute combat for a bot and an enemy, return state of bot when finished.
+
+- Building resolution
+
+Execute cost calculation + time to complete, etc for buildings
+
+- Upkeep calculation
+
+Execute cost calculation + degradation, etc for bots, buildings, w/e
+
+
+A slave process would only calculate the results of an action, returning an
+update (essentially a diff) of the game-state after the action would have
+occured. It is up to the Server-god to reconcile all that data with reality.
+
+###Client
+
+The player, who controls submission of WU's to the server, and consumes data
+from the World-god to see where things are.
+
+
