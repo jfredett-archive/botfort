@@ -4,7 +4,7 @@ describe Action do
     let!(:valid_action) { 
       action :valid_action do
         move abs: [0,0]
-        mov 1, -2
+        move 1, -2
         wait
       end
     }
