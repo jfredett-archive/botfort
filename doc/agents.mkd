@@ -1,0 +1,69 @@
+## Agents
+
+a thing can be an Agent
+  an Agent can Perform an Action
+  an Agent understands a set of Commands
+  an Action is a ordered collection of Commands 
+  an Action is a Command.
+
+being an Agent is a concern -- many things can be agents
+  ex: Bots, Monsters
+an Agent can claim to respond to a Command
+before an Agent runs a command, he checks to see if he supports
+  the command, if he does not, he does one of the following:
+    crashes -- aborting the current Action and raising a flag
+    aborts -- aborts the current Action, no flag raised
+    ignores -- skips the particular command in the action, and moves on
+
+there is a Command 'claim' to register new Commands 
+  every agent responds to "claim"  
+  if the agent already responds to the given command, then nothing happens
+there is a Command 'forget' to unregister a Command
+  every agent responds to 'forget'
+  if the agent doesn't respond to the given command, then nothing happens
+    
+claiming a command requires a name and a block, the block provides the
+implementation of the command.
+  eg, a bot might do:
+    
+    claim :move do |args*, opts = {}|
+      #implement move
+    end
+
+Commands can have a default implementation
+  Default implementations are built like:
+
+      command :move do |args*, opts = {}|
+        @original_location = location
+        #... impl
+      end
+
+  Naturally, these will expect some minimum implementation in the agent, the
+  execution context is the Agent Instance.
+
+An agent can also claim with a default implementation via:
+
+    claim :move
+
+This should check to see if there is a default implementation, if so, then it 
+  implements the command with that method, otherwise it raises an error.
+
+Claiming a command twice overrides the previous definition, eg: 
+
+    claim :say do
+      puts "1"
+    end
+
+    claim :say do
+      puts "2"
+    end
+
+would put "2" to STDOUT when it gets run.
+ 
+There should be a way for an individual instance of an Agent to claim commands
+
+
+
+
+
+
