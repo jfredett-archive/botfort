@@ -19,5 +19,7 @@ describe "An Agent" do
 
   it { should respond_to :perform }
   it { should respond_to :understands? }
+  it { should respond_to :claim }          # an instance can claim a particular action
+  its(:class) { should respond_to :claim } # by default, an entire class can claim an action
 
 end
