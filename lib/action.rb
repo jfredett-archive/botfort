@@ -8,6 +8,15 @@ class Action
     @block = block
     register
   end
+
+
+  def interpretation
+    @block
+  end
+
+  def has_default? 
+    !!interpretation
+  end
 end
 
 module Kernel
