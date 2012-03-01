@@ -20,10 +20,10 @@ module Agent
       __understood_actions[action_name] = Action.find(action_name)
     end
 
+    private
+
     def execute(action)
     end
-
-    private
 
     def __understood_actions 
       @__understood_actions ||= {}
