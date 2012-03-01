@@ -7,7 +7,7 @@ module Agent
   module InstanceMethods
 
     def understands?(action_name)
-      __understood_actions.has_key?(action_name)
+      __understood_actions.has_key?(action_name) || self.class.understands?(action_name)
     end
 
     def perform(action_name)
@@ -30,10 +30,18 @@ module Agent
   end
 
   module ClassMethods
-    def claim 
+    def claim(action_name)
+      __understood_actions[action_name] = Action.find(action_name)
     end
 
-    def understands?
+    def understands?(action_name)
+      __understood_actions.has_key?(action_name)
+    end
+
+    private 
+
+    def __understood_actions 
+      @__understood_actions ||= Hash.new(proc { |n| raise ActionNotUnderstood(n) })
     end
   end
 

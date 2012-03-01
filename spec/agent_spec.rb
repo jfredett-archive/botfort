@@ -44,6 +44,7 @@ describe do
       describe ".claim" do
         it "should be able to claim an action with a provided implementation" 
         it "should be able to claim an action with no default, if it provides one"
+        it "should not be able to claim an action with no default, when it doesn't provide one"
         it "should be able to override a default implementation"
       end
 
@@ -58,6 +59,7 @@ describe do
       describe "#claim" do
         it "should be able to claim an action with a provided implementation" 
         it "should be able to claim an action with no default, if it provides one" 
+        it "should not be able to claim an action with no default, when it doesn't provide one"
         
         it "should understand any actions it claims to understand" do
           subject.claim(:valid_action)
@@ -72,9 +74,25 @@ describe do
       end
 
       describe "#understands?" do
-        it "should be that a new instance understands all of the commands it's class claims"
-        it "should understand any action that it claims"
-        it "should not understand any action it does not claim"
+        before do
+          action :another_valid_action
+
+          subject.claim(:valid_action)
+          subject.class.claim(:another_valid_action)
+        end
+
+
+        it "should be that a new instance understands all of the commands it's class claims" do
+          subject.understands?(:another_valid_action).should be_true  
+        end
+
+        it "should understand any action that it claims" do
+          subject.understands?(:valid_action).should be_true  
+        end
+
+        it "should not understand any action it or it's class does not claim" do
+          subject.understands?(:unclaimed_action).should be_false
+        end
       end
 
       describe "#perform" do
