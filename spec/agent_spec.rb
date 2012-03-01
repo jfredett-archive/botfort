@@ -98,13 +98,13 @@ describe do
       describe "#perform" do
         it "should cause the associated action definition to be executed in the instance context" do
           subject.claim(:valid_action)
-          subject.should_receive(:execute).with(instance_of(Action))
+          valid_action.should_receive(:call)
           subject.perform(:valid_action)
         end
 
         it "should throw an error if the action is not understood by the agent" do
           #note: subject does not claim to understand valid action
-          expect { subject.perform(:valid_action) }.to raise_error ActionNotUnderstood
+          expect { subject.perform(:valid_action) }.to raise_error Agent::ActionNotUnderstood
         end
       end
     end

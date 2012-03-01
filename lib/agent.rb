@@ -1,54 +1,38 @@
 module Agent
   def self.included(cls)
     cls.send(:include, InstanceMethods)
-    cls.send(:extend,  ClassMethods)
+    cls.send(:extend,  Claimant)
+    cls.class.send(:include, ClassMethods) #it really does need to be this way...
   end
 
-  module InstanceMethods
+  # a thing that can claim an action is a claimant
+  module Claimant 
+    def claim(action_name)
+      __understood_actions[action_name] = Action.find(action_name)
+    end
 
     def understands?(action_name)
       __understood_actions.has_key?(action_name) || self.class.understands?(action_name)
     end
 
-    def perform(action_name)
-      execute(__understood_actions[action_name])
-    end
-
-    def claim(action_name)
-      __understood_actions[action_name] = Action.find(action_name)
-    end
-
-    private
-
-    def execute(action)
-      action.call
-    end
+    private 
 
     def __understood_actions 
-      @__understood_actions ||= Hash.new(proc { |n| raise ActionNotUnderstood(n) })
+      @__understood_actions ||= Hash.new(proc { |n| raise ActionNotUnderstood.new(n) })
+    end
+  end
+
+  module InstanceMethods
+    include Agent::Claimant
+
+    def perform(action_name)
+      __understood_actions[action_name].call
     end
   end
 
   module ClassMethods
-    def claim(action_name)
-      __understood_actions[action_name] = Action.find(action_name)
-    end
-
-    def understands?(action_name)
-      __understood_actions.has_key?(action_name)
-    end
-
-    private 
-
-    def __understood_actions 
-      @__understood_actions ||= Hash.new(proc { |n| raise ActionNotUnderstood(n) })
-    end
+    def understands?(_); end
   end
 
-end
-
-class ActionNotUnderstood < Exception ; end
-
-def ActionNotUnderstood(msg)
-  ActionNotUnderstood.new(msg)
+  class ActionNotUnderstood < Exception ; end
 end
