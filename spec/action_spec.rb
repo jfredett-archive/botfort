@@ -29,12 +29,18 @@ describe Action do
     context "after finding an action with a default interpretation" do
       subject { Action.find(:valid_action) } 
 
+      it { should respond_to :call }
       it { should respond_to :interpretation }
       it { should respond_to :name }
       it { should respond_to :has_default? }
 
       its(:interpretation) { should respond_to :call }
       its(:has_default?) { should be_true }
+
+      it "should delegate #call onto interpretation" do
+        subject.interpretation.should_receive(:call)
+        subject.call
+      end
     end
 
     context "after finding an action without a default interpretation" do

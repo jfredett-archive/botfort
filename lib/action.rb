@@ -2,6 +2,7 @@ require './lib/registerable'
 
 class Action
   include Registerable
+  extend Forwardable
 
   def initialize(name, &block)
     @name = name
@@ -9,6 +10,7 @@ class Action
     register
   end
 
+  delegate :call => :interpretation
 
   def interpretation
     @block
