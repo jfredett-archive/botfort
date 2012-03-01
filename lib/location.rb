@@ -7,8 +7,7 @@ class Location
   end
 
   def self.[](*args)
-    return find args if exists? args
-    new(*args)
+    find(args) || new(*args)
   end
 
   def within(r)
