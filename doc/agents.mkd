@@ -62,8 +62,32 @@ would put "2" to STDOUT when it gets run.
  
 There should be a way for an individual instance of an Agent to claim commands
 
+##
 
+It should also be capable of reporting on it's dependent actions, as well as any
+missing dependencies. That is, given
 
+    action :foo do
+      bar 1,2,3
+      baz 3,4,5
+      bingle
+    end
+
+    action :bar do
+      puts "a thing"
+    end
+
+    action :bingle
+
+I should be able to do:
+
+    Action.find(:foo).dependencies
+
+and have a list of 
+
+    { :bar => Action.find(bar),
+      :baz => nil,
+      :bingle => :abstract }
 
 
 
