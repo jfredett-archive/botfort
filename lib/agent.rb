@@ -28,6 +28,12 @@ module Agent
     def perform(action_name)
       __understood_actions[action_name].call
     end
+
+    alias old_method_missing method_missing
+    def method_missing(method, *args, &block)
+      perform(action_name) if understands?(method)
+      old_method_missing(method, *args, &block)
+    end
   end
 
   module ClassMethods

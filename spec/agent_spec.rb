@@ -75,6 +75,13 @@ describe do
         it "should not be able to claim an action unless the dependencies of that action are also understood"
       end
 
+      describe "" do
+        it "should respond to each action as if it were an instance method" do
+          subject.claim(:valid_action)
+          expect { subject.valid_action }.to_not raise_error NoMethodError
+        end
+      end
+
       describe "#understands?" do
         before do
           action :another_valid_action
@@ -108,6 +115,8 @@ describe do
           #note: subject does not claim to understand valid action
           expect { subject.perform(:valid_action) }.to raise_error Agent::ActionNotUnderstood
         end
+
+        it "should alter the internal state of the agent if the action implementation would do so" 
       end
     end
   end
