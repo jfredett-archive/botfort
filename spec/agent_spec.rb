@@ -29,14 +29,16 @@ describe do
   context do
     let!(:valid_action) {
       action :valid_action do
-        move 0, 1
-        puts "I Moved!"
+        move 0,1
+        "Done"
       end
     }
 
-    let!(:valid_action_no_default) { 
-      action :valid_action_no_default
+    let!(:another_valid_action) {
+      action :another_valid_action
     }
+
+    before { subject.claim(:valid_action) }
 
     context "Agent" do
       subject { AnAgent }
@@ -49,21 +51,8 @@ describe do
       end
 
       describe ".understands?" do
-        subject { AnAgent }
-
-        before do
-          action :another_valid_action
-
-          subject.claim(:valid_action)
-        end
-
-        it "should understand any action that it claims" do
-          subject.understands?(:valid_action).should be_true
-        end
-
-        it "should not understand any action it does not claim" do
-          subject.understands?(:another_valid_action).should be_false
-        end
+        it { should understand :valid_action }             # because it claims it
+        it { should_not understand :another_valid_action } # because it doesn't
       end
     end
 
@@ -75,48 +64,33 @@ describe do
         it "should not be able to claim an action unless the dependencies of that action are also understood"
       end
 
-      describe "" do
+      describe "after claiming a method" do
         it "should respond to each action as if it were an instance method" do
-          subject.claim(:valid_action)
           expect { subject.valid_action }.to_not raise_error NoMethodError
         end
       end
 
       describe "#understands?" do
-        before do
-          action :another_valid_action
+        before { subject.class.claim(:another_valid_action) }
 
-          subject.claim(:valid_action)
-          subject.class.claim(:another_valid_action)
-        end
-
-
-        it "should be that a new instance understands all of the commands it's class claims" do
-          subject.understands?(:another_valid_action).should be_true  
-        end
-
-        it "should understand any action that it claims" do
-          subject.understands?(:valid_action).should be_true  
-        end
-
-        it "should not understand any action it or it's class does not claim" do
-          subject.understands?(:unclaimed_action).should be_false
-        end
+        it { should understand :another_valid_action } # because it's on it's class.
+        it { should understand :valid_action }         # because it claims it directly
+        it { should_not understand :unclaimed_action } # because it and it's class don't claim it
       end
 
       describe "#perform" do
         it "should cause the associated action definition to be executed in the instance context" do
-          subject.claim(:valid_action)
           valid_action.should_receive(:call)
           subject.perform(:valid_action)
         end
 
         it "should throw an error if the action is not understood by the agent" do
-          #note: subject does not claim to understand valid action
-          expect { subject.perform(:valid_action) }.to raise_error Agent::ActionNotUnderstood
+          #note: subject does not claim to understand another valid action
+          expect { subject.perform(:another_valid_action) }.to raise_error Agent::ActionNotUnderstood
         end
 
         it "should alter the internal state of the agent if the action implementation would do so" 
+        it "should handle actions which take arguments"
       end
     end
   end
