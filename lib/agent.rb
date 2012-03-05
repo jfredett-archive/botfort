@@ -18,7 +18,7 @@ module Agent
     private 
 
     def __understood_actions 
-      @__understood_actions ||= Hash.new(proc { |n| raise ActionNotUnderstood.new(n) })
+      @__understood_actions ||= self.class.send(:__understood_actions)
     end
   end
 
@@ -38,6 +38,12 @@ module Agent
 
   module ClassMethods
     def understands?(_); end
+
+    private
+
+    def __understood_actions
+      Hash.new(proc { |n| raise ActionNotUnderstood.new(n) })
+    end
   end
 
   class ActionNotUnderstood < Exception ; end
