@@ -13,7 +13,7 @@ module Registerable
     end
 
     def delete(name)
-      @registry.reject! { |k,v| k == name } 
+      @registry.delete(name) 
     end
 
     def find(name)
@@ -21,7 +21,7 @@ module Registerable
     end
 
     def exists?(name)
-      @registry.keys.include?(name)
+      @registry.has_key?(name) 
     end
 
     def register(name, instance)
