@@ -8,3 +8,5 @@ end
   puts "loading: #{file}" if ENV['VERBOSE']
   require file
 end
+
+require 'pry'
