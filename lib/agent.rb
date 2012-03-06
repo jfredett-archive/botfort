@@ -1,3 +1,4 @@
+require './lib/exceptions'
 module Agent
   def self.included(cls)
     cls.send(:include, InstanceMethods)
@@ -7,18 +8,26 @@ module Agent
 
   # a thing that can claim an action is a claimant
   module Claimant 
-    def claim(action_name)
-      __understood_actions[action_name] = Action.find(action_name)
+    def claim(action_name, &block)
+      __understood_actions[action_name] = block ? block : Action.find(action_name)
     end
 
     def understands?(action_name)
       __understood_actions.has_key?(action_name) || self.class.understands?(action_name)
     end
 
+    def forget(action_name)
+      __understood_actions.delete(action_name)
+    end
+
+    def forget_all!
+      @__understood_actions = nil 
+    end
+
     private 
 
     def __understood_actions 
-      @__understood_actions ||= self.class.send(:__understood_actions)
+      @__understood_actions ||= {}
     end
   end
 
@@ -26,6 +35,7 @@ module Agent
     include Agent::Claimant
 
     def perform(action_name)
+      binding.pry if $in_failing
       __understood_actions[action_name].call
     end
 

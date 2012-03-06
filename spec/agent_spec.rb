@@ -5,10 +5,35 @@ describe Agent do
 end
 
 describe do
+  subject { AnAgent.new }
+
   before :all do
     class AnAgent
       include Agent
     end
+
+    action :instance_action_with_default do
+      "Done"
+    end
+
+    action :class_action_with_default do 
+      "Class"
+    end
+
+    action :instance_action_without_default
+    action :class_action_without_default 
+
+    action :unclaimed_action
+  end
+
+  before :each do
+    AnAgent.claim(:class_action_with_default)
+    AnAgent.claim(:class_action_without_default)
+  end
+
+  after :each do
+    AnAgent.forget_all!
+    subject.forget_all!
   end
 
   after :all do
@@ -16,30 +41,19 @@ describe do
     Object.send(:remove_const, :AnAgent)
   end
 
-  subject { AnAgent.new }
-
   context "basic API" do
     it { should respond_to :perform }
     it { should respond_to :understands? }
     it { should respond_to :claim }                 # an instance can claim a particular action
+    it { should respond_to :forget_all! }           # un-claims all instance-claimed actions
+    it { should respond_to :forget }                # forgets a single named action
+    its(:class) { should respond_to :forget_all! }  # un-claims all class-claimed actions
+    its(:class) { should respond_to :forget }       # forgets a single named action
     its(:class) { should respond_to :claim }        # by default, an entire class can claim an action
     its(:class) { should respond_to :understands? } # similarly, an entire class can understand an action
   end
 
   context do
-    let!(:valid_action) {
-      action :valid_action do
-        move 0,1
-        "Done"
-      end
-    }
-
-    let!(:another_valid_action) {
-      action :another_valid_action
-    }
-
-    before { subject.claim(:valid_action) }
-
     context "Agent" do
       subject { AnAgent }
 
@@ -51,12 +65,40 @@ describe do
       end
 
       describe ".understands?" do
-        it { should understand :valid_action }             # because it claims it
-        it { should_not understand :another_valid_action } # because it doesn't
+        it { should understand :class_action_with_default }           # because it claims it
+        it { should understand :class_action_without_default }        # because it claims it
+        it { should_not understand :instance_action_with_default }    # because it doesn't
+        it { should_not understand :instance_action_without_default } # because it doesn't
       end
     end
 
+
     context "Agent" do
+      subject { AnAgent.new } 
+
+      before :each do
+        subject.claim(:instance_action_with_default) 
+        subject.claim(:instance_action_without_default) 
+      end
+
+      describe "#forget" do
+        before { subject.forget :instance_action_with_default }
+
+        it { should_not understand :instance_action_with_default }
+        it { should understand :instance_action_without_default }
+        it { should understand :class_action_with_default }
+        it { should understand :class_action_without_default }
+      end
+
+      describe "#forget_all!" do
+        before { subject.forget_all! }
+
+        it { should_not understand :instance_action_with_default }
+        it { should_not understand :instance_action_without_default }
+        it { should understand :class_action_with_default } 
+        it { should understand :class_action_without_default } 
+      end
+
       describe "#claim" do
         it "should be able to claim an action with a provided implementation" 
         it "should be able to claim an action with no default, if it provides one" 
@@ -66,27 +108,27 @@ describe do
 
       describe "after claiming a method" do
         it "should respond to each action as if it were an instance method" do
-          expect { subject.valid_action }.to_not raise_error NoMethodError
+          expect { subject.instance_action_with_default }.to_not raise_error NoMethodError
         end
       end
 
       describe "#understands?" do
-        before { subject.class.claim(:another_valid_action) }
-
-        it { should understand :another_valid_action } # because it's on it's class.
-        it { should understand :valid_action }         # because it claims it directly
-        it { should_not understand :unclaimed_action } # because it and it's class don't claim it
+        it { should understand :instance_action_without_default } # because it claims it directly
+        it { should understand :instance_action_with_default }    # because it claims it directly
+        it { should understand :class_action_without_default }    # because it's on it's class.
+        it { should understand :class_action_with_default }       # because it's on it's class.
+        it { should_not understand :unclaimed_action }            # because it and it's class don't claim it
       end
 
       describe "#perform" do
         it "should cause the associated action definition to be executed in the instance context" do
-          valid_action.should_receive(:call)
-          subject.perform(:valid_action)
+          Action.find(:instance_action_with_default).should_receive(:call)
+          subject.perform(:instance_action_with_default)
         end
 
         it "should throw an error if the action is not understood by the agent" do
           #note: subject does not claim to understand another valid action
-          expect { subject.perform(:another_valid_action) }.to raise_error Agent::ActionNotUnderstood
+          expect { subject.perform(:instance_action_without_default) }.to raise_error Agent::ActionNotUnderstood
         end
 
         it "should alter the internal state of the agent if the action implementation would do so" 
