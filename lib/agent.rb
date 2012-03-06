@@ -36,7 +36,6 @@ module Agent
     include Agent::Claimant
 
     def perform(action_name)
-      binding.pry if $in_failing
       __understood_actions[action_name].call
     end
 
