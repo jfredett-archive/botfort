@@ -1,4 +1,5 @@
 require './lib/exceptions'
+
 module Agent
   def self.included(cls)
     cls.send(:include, InstanceMethods)
@@ -55,5 +56,4 @@ module Agent
       Hash.new(proc { |n| raise ActionNotUnderstood.new(n) })
     end
   end
-
 end

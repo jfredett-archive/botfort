@@ -75,20 +75,20 @@ describe do
         before { subject.forget :class_action_with_default }
 
         it { should_not understand :class_action_with_default }
-        it { should understand :class_action_without_default }
+        it { should understand :class_action_without_default  }
 
         its(:new) { should_not understand :class_action_with_default }
-        its(:new) { should understand :class_action_without_default } 
+        its(:new) { should understand :class_action_without_default  }
       end
 
       describe ".forget_all!" do
         before { subject.forget_all! }
 
-        it { should_not understand :class_action_with_default } 
-        it { should_not understand :class_action_without_default } 
+        it { should_not understand :class_action_with_default    }
+        it { should_not understand :class_action_without_default }
 
-        its(:new) { should_not understand :class_action_with_default }
-        its(:new) { should_not understand :class_action_without_default } 
+        its(:new) { should_not understand :class_action_with_default    }
+        its(:new) { should_not understand :class_action_without_default }
       end
     end
 
@@ -105,18 +105,18 @@ describe do
         before { subject.forget :instance_action_with_default }
 
         it { should_not understand :instance_action_with_default }
-        it { should understand :instance_action_without_default }
-        it { should understand :class_action_with_default }
-        it { should understand :class_action_without_default }
+        it { should understand :instance_action_without_default  }
+        it { should understand :class_action_with_default        }
+        it { should understand :class_action_without_default     }
       end
 
       describe "#forget_all!" do
         before { subject.forget_all! }
 
-        it { should_not understand :instance_action_with_default }
+        it { should_not understand :instance_action_with_default    }
         it { should_not understand :instance_action_without_default }
-        it { should understand :class_action_with_default } 
-        it { should understand :class_action_without_default } 
+        it { should understand :class_action_with_default           }
+        it { should understand :class_action_without_default        }
       end
 
       describe "#claim" do
@@ -134,10 +134,10 @@ describe do
 
       describe "#understands?" do
         it { should understand :instance_action_without_default } # because it claims it directly
-        it { should understand :instance_action_with_default }    # because it claims it directly
-        it { should understand :class_action_without_default }    # because it's on it's class.
-        it { should understand :class_action_with_default }       # because it's on it's class.
-        it { should_not understand :unclaimed_action }            # because it and it's class don't claim it
+        it { should understand :instance_action_with_default    } # because it claims it directly
+        it { should understand :class_action_without_default    } # because it's on it's class.
+        it { should understand :class_action_with_default       } # because it's on it's class.
+        it { should_not understand :unclaimed_action            } # because it and it's class don't claim it
       end
 
       describe "#perform" do
