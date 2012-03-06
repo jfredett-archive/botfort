@@ -46,5 +46,4 @@ module Agent
     end
   end
 
-  class ActionNotUnderstood < Exception ; end
 end

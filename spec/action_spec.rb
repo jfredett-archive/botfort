@@ -50,8 +50,11 @@ describe Action do
       it { should respond_to :name }
       it { should respond_to :has_default? }
 
-      its(:interpretation) { should be_nil }
       its(:has_default?) { should be_false }
+
+      it "should raise an error if you try to execute it's action" do
+        expect { subject.interpretation.call }.to raise_error Agent::ActionNotUnderstood 
+      end
     end
   end
 end
