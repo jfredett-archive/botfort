@@ -35,12 +35,7 @@ describe Action do
       it { should respond_to :has_default? }
 
       its(:interpretation) { should respond_to :call }
-      its(:has_default?) { should be_true }
-
-      it "should delegate #call onto interpretation" do
-        subject.interpretation.should_receive(:call)
-        subject.call
-      end
+      its(:has_default?)   { should be_true }
     end
 
     context "after finding an action without a default interpretation" do
