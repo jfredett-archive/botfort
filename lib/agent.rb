@@ -45,6 +45,11 @@ module Agent
       return perform(method) if understands?(method)
       old_method_missing(method, *args, &block)
     end
+
+    alias old_respond_to respond_to?
+    def respond_to?(method)
+      understands?(method) || old_respond_to(method)
+    end
   end
 
   module ClassMethods
