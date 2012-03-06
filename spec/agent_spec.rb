@@ -70,6 +70,26 @@ describe do
         it { should_not understand :instance_action_with_default }    # because it doesn't
         it { should_not understand :instance_action_without_default } # because it doesn't
       end
+
+      describe ".forget" do
+        before { subject.forget :class_action_with_default }
+
+        it { should_not understand :class_action_with_default }
+        it { should understand :class_action_without_default }
+
+        its(:new) { should_not understand :class_action_with_default }
+        its(:new) { should understand :class_action_without_default } 
+      end
+
+      describe ".forget_all!" do
+        before { subject.forget_all! }
+
+        it { should_not understand :class_action_with_default } 
+        it { should_not understand :class_action_without_default } 
+
+        its(:new) { should_not understand :class_action_with_default }
+        its(:new) { should_not understand :class_action_without_default } 
+      end
     end
 
 
