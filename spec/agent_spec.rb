@@ -128,13 +128,15 @@ describe do
 
       describe "after claiming a method" do
         it "should respond to each action as if it were an instance method" do
-          expect { subject.instance_action_with_default }.to_not raise_error NoMethodError
+          expect { 
+            subject.should_receive(:perform).with(:instance_action_with_default)
+            subject.instance_action_with_default 
+          }.to_not raise_error NoMethodError
         end
 
         it "should respond_to a claimed action as if it were a method" do
           subject.should respond_to :instance_action_without_default
         end
-
       end
 
       describe "#understands?" do
