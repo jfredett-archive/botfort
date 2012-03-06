@@ -28,7 +28,7 @@ module Agent
     private 
 
     def __understood_actions 
-      @__understood_actions ||= {}
+      @__understood_actions ||= self.class.send(:__understood_actions).dup
     end
   end
 
