@@ -16,9 +16,6 @@ Botfort language.
 
 - Each commit must add tests for new features
 
-- Each commit must represent the addition of exactly one feature with (at least)
-  exactly one corresponding test.
-
 - Only comment if something is confusing
 
 - Think like an object
@@ -27,4 +24,20 @@ Botfort language.
 
 - Excepting the first, occasionally break the rules if it would be funny to do so.
 
+
+### obsolete rules
+
+- Each commit must represent the addition of exactly one feature with (at least)
+  exactly one corresponding test.
+
+Turns out this is pretty hard. When I started this experiment, it was easy to
+isolate the small chunks of functionality. However, as you start extracting
+concerns that operate on multiple levels (like Agent/Action) of the class
+heirarchy, it gets hard to only add a few tests at a time. Notably, some commits
+are refactoring commits, others only add tests, some only remove tests. 
+
+I also started committing pending tests in feature branches -- this was a
+descision not lightly made. In particular, I decided the rule should be "no
+pending tests in origin/master." Keeping unimplemented tests helps to direct my
+efforts to the final objective.
 
