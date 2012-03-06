@@ -59,8 +59,8 @@ describe do
     end
   end
 
-  context do
-    context "Agent" do
+  context Agent do
+    context do
       subject { AnAgent }
 
       describe ".claim" do
@@ -99,7 +99,7 @@ describe do
     end
 
 
-    context "Agent" do
+    context do
       subject { AnAgent.new } 
 
       before :each do
