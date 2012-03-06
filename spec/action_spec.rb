@@ -2,17 +2,16 @@ require 'spec_helper'
 describe Action do
   context ".find" do
     subject { Action } 
-    let!(:valid_action) { 
+
+    before  do 
       action :valid_action do
         move abs: [0,0]
         move 1, -2
         wait
       end
-    }
 
-    let!(:valid_action_without_impl) {
       action :valid_action_without_impl
-    } 
+    end
 
     it { should respond_to :find }
 
