@@ -42,15 +42,21 @@ describe do
   end
 
   context "basic API" do
-    it { should respond_to :perform }
-    it { should respond_to :understands? }
-    it { should respond_to :claim }                 # an instance can claim a particular action
-    it { should respond_to :forget_all! }           # un-claims all instance-claimed actions
-    it { should respond_to :forget }                # forgets a single named action
-    its(:class) { should respond_to :forget_all! }  # un-claims all class-claimed actions
-    its(:class) { should respond_to :forget }       # forgets a single named action
-    its(:class) { should respond_to :claim }        # by default, an entire class can claim an action
-    its(:class) { should respond_to :understands? } # similarly, an entire class can understand an action
+    context "instance" do 
+      it { should respond_to :perform }
+      it { should respond_to :understands? }
+      it { should respond_to :claim }       # an instance can claim a particular action
+      it { should respond_to :forget_all! } # un-claims all instance-claimed actions
+      it { should respond_to :forget }      # forgets a single named action
+    end
+
+    context "class" do
+      subject { AnAgent }
+      it { should respond_to :forget_all! }  # un-claims all class-claimed actions
+      it { should respond_to :forget }       # forgets a single named action
+      it { should respond_to :claim }        # by default, an entire class can claim an action
+      it { should respond_to :understands? } # similarly, an entire class can understand an action
+    end
   end
 
   context do
