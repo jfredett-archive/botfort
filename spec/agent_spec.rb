@@ -13,7 +13,7 @@ describe do
     end
 
     action :instance_action_with_default do
-      "Done"
+      "Instance"
     end
 
     action :class_action_with_default do 
@@ -23,12 +23,20 @@ describe do
     action :instance_action_without_default
     action :class_action_without_default 
 
+    action :no_default_to_be_claimed
+
+    action :with_default_to_be_claimed do
+      "TBC"
+    end
+
     action :unclaimed_action
   end
 
   before :each do
     AnAgent.claim(:class_action_with_default)
-    AnAgent.claim(:class_action_without_default)
+    AnAgent.claim(:class_action_without_default) do
+      "Default implementation of :class_action_without_default"
+    end
   end
 
   after :each do
@@ -64,10 +72,34 @@ describe do
       subject { AnAgent }
 
       describe ".claim" do
-        it "should be able to claim an action with a provided implementation" 
-        it "should be able to claim an action with no default, if it provides one"
-        it "should not be able to claim an action with no default, when it doesn't provide one"
-        it "should be able to override a default implementation"
+        it "should be able to claim an action with a provided implementation" do
+          expect { 
+            subject.claim(:with_default_to_be_claimed) 
+          }.to_not raise_error Agent::NoImplementationGiven
+        end
+
+        it "should be able to claim an action with no default, if it provides one" do
+          expect { 
+            subject.claim(:no_default_to_be_claimed) do
+              "Given Impl"
+            end
+          }.to_not raise_error Agent::NoImplementationGiven
+        end
+
+        it "should not be able to claim an action with no default, when it doesn't provide one" do
+          expect { 
+            subject.claim(:no_default_to_be_claimed) 
+          }.to raise_error Agent::NoImplementationGiven
+        end
+
+        it "should be able to override a default implementation" do
+          expect { 
+            subject.claim(:with_default_to_be_claimed) do
+              "Overridden Impl"
+            end
+          }.to_not raise_error Agent::NoImplementationGiven
+          subject.new.perform(:with_default_to_be_claimed).should == "Overridden Impl"
+        end
       end
 
       describe ".understands?" do
@@ -104,7 +136,9 @@ describe do
 
       before :each do
         subject.claim(:instance_action_with_default) 
-        subject.claim(:instance_action_without_default) 
+        subject.claim(:instance_action_without_default) do
+          "A implementation of :instance_action_with_default" 
+        end
       end
 
       describe "#forget" do
@@ -161,7 +195,8 @@ describe do
 
         it "should throw an error if the action is not understood by the agent" do
           #note: subject does not claim to understand another valid action
-          expect { subject.perform(:instance_action_without_default) }.to raise_error Agent::ActionNotUnderstood
+          subject.should_not understand :unclaimed_action 
+          expect { subject.perform(:unclaimed_action) }.to raise_error Agent::ActionNotUnderstood
         end
 
         it "should alter the internal state of the agent if the action implementation would do so" 

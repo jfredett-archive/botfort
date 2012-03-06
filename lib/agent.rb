@@ -10,7 +10,13 @@ module Agent
   # a thing that can claim an action is a claimant
   module Claimant 
     def claim(action_name, &block)
-      __understood_actions[action_name] = block ? block : Action.find(action_name)
+      action = Action.find(action_name)
+      if action.has_default?
+        __understood_actions[action_name] = block ? block : Action.find(action_name)
+      else
+        raise Agent::NoImplementationGiven unless block
+        __understood_actions[action_name] = block
+      end
     end
 
     def understands?(action_name)

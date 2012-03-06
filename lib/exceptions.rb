@@ -1,3 +1,7 @@
 module Agent
-  class ActionNotUnderstood < Exception ; end
+  class AgentException < Exception ; end
+
+  class ActionNotUnderstood < AgentException ; end
+
+  class NoImplementationGiven < AgentException ; end
 end
