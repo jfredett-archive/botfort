@@ -10,6 +10,12 @@ describe do
   before :all do
     class AnAgent
       include Agent
+
+      attr_accessor :foo
+
+      def initialize(foo=nil)
+        @foo = foo
+      end
     end
 
     action :instance_action_with_default do
@@ -212,18 +218,29 @@ describe do
       end
 
       describe "#perform" do
-        it "should cause the associated action definition to be executed in the instance context" do
-          Action.find(:instance_action_with_default).should_receive(:call)
-          subject.perform(:instance_action_with_default)
-        end
-
         it "should throw an error if the action is not understood by the agent" do
           #note: subject does not claim to understand another valid action
           subject.should_not understand :unclaimed_action 
           expect { subject.perform(:unclaimed_action) }.to raise_error Agent::ActionNotUnderstood
         end
 
-        it "should alter the internal state of the agent if the action implementation would do so" 
+        context "effects" do
+          subject { AnAgent.new("Unaltered") }
+          before do
+            action :alters_foo do
+              @foo = "Altered"
+            end
+            subject.claim(:alters_foo)
+
+            subject.foo.should_not == "Altered" #sanity check
+          end
+
+          it "should be capable of altering internal state" do
+            subject.alters_foo
+            subject.foo.should == "Altered"
+          end
+        end
+
         it "should handle actions which take arguments"
       end
     end

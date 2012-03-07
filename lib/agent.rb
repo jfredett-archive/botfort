@@ -42,7 +42,7 @@ module Agent
     include Agent::Claimant
 
     def perform(action_name)
-      __understood_actions[action_name].call
+      instance_eval(&__understood_actions[action_name])
     end
 
     alias old_method_missing method_missing
