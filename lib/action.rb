@@ -18,6 +18,11 @@ class Action
     @block || proc { |n| raise Agent::ActionNotUnderstood.new(n) } 
   end
 
+  def to_proc
+    raise Agent::ActionNotUnderstood unless has_default?
+    interpretation 
+  end
+
   def has_default? 
     @has_default
   end

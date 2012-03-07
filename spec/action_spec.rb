@@ -29,6 +29,7 @@ describe Action do
       subject { Action.find(:valid_action) } 
 
       it { should respond_to :call }
+      it { should respond_to :to_proc }
       it { should respond_to :interpretation }
       it { should respond_to :name }
       it { should respond_to :has_default? }
@@ -41,6 +42,8 @@ describe Action do
       subject { Action.find(:valid_action_without_impl) } 
 
       it { should respond_to :interpretation }
+      it { should respond_to :call }
+      it { should respond_to :to_proc }
       it { should respond_to :name }
       it { should respond_to :has_default? }
 
@@ -48,6 +51,10 @@ describe Action do
 
       it "should raise an error if you try to execute it's action" do
         expect { subject.interpretation.call }.to raise_error Agent::ActionNotUnderstood 
+      end
+
+      it "should raise an error if you try to convert it to a proc" do
+        expect { subject.to_proc }.to raise_error Agent::ActionNotUnderstood
       end
     end
   end
