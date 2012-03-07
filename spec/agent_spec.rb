@@ -188,8 +188,6 @@ describe do
           }.to_not raise_error Agent::NoImplementationGiven
           subject.perform(:with_default_to_be_claimed).should == "Overridden Impl"
         end
-
-        it "should not be able to claim an action unless the dependencies of that action are also understood"
       end
 
       describe "after claiming a method" do
