@@ -196,6 +196,38 @@ describe do
         end
       end
 
+      describe "claiming actions from within an action" do
+        before do
+          action :meta_action do
+            claim :another_action
+            claim :an_action_with_an_impl do
+              "Impl"
+            end
+          end
+
+          action :another_action do
+            "Impl of Another Action"
+          end
+
+          action :an_action_with_an_impl 
+
+          subject.claim(:meta_action)
+        end
+
+        context "before claiming the meta action" do
+
+          it { should_not understand :another_action }
+          it { should_not understand :an_action_with_an_impl }
+        end
+
+        context "after claiming the meta action" do
+          before { subject.perform(:meta_action) }
+
+          it { should understand :another_action }
+          it { should understand :an_action_with_an_impl }
+        end
+      end
+
       describe "after claiming a method" do
         it "should respond to each action as if it were an instance method" do
           expect { 
@@ -253,5 +285,4 @@ describe do
       end
     end
   end
-
 end
