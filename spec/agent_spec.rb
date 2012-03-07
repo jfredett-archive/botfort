@@ -230,7 +230,11 @@ describe do
             action :alters_foo do
               @foo = "Altered"
             end
+            action :alters_with_arg do |f|
+              @foo = f
+            end
             subject.claim(:alters_foo)
+            subject.claim(:alters_with_arg)
 
             subject.foo.should_not == "Altered" #sanity check
           end
@@ -239,9 +243,13 @@ describe do
             subject.alters_foo
             subject.foo.should == "Altered"
           end
+
+          it "should handle actions which take arguments" do
+            subject.alters_with_arg("Altered via Argument")
+            subject.foo.should == "Altered via Argument"
+          end
         end
 
-        it "should handle actions which take arguments"
       end
     end
   end

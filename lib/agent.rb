@@ -41,13 +41,13 @@ module Agent
   module InstanceMethods
     include Agent::Claimant
 
-    def perform(action_name)
-      instance_eval(&__understood_actions[action_name])
+    def perform(action_name, *args)
+      instance_exec(*args, &__understood_actions[action_name])
     end
 
     alias old_method_missing method_missing
     def method_missing(method, *args, &block)
-      return perform(method) if understands?(method)
+      return perform(method, *args) if understands?(method)
       old_method_missing(method, *args, &block)
     end
 
