@@ -160,9 +160,35 @@ describe do
       end
 
       describe "#claim" do
-        it "should be able to claim an action with a provided implementation" 
-        it "should be able to claim an action with no default, if it provides one" 
-        it "should not be able to claim an action with no default, when it doesn't provide one"
+        it "should be able to claim an action with a provided implementation" do
+          expect { 
+            subject.claim(:with_default_to_be_claimed) 
+          }.to_not raise_error Agent::NoImplementationGiven
+        end
+
+        it "should be able to claim an action with no default, if it provides one" do
+          expect { 
+            subject.claim(:no_default_to_be_claimed) do
+              "Given Impl"
+            end
+          }.to_not raise_error Agent::NoImplementationGiven
+        end
+
+        it "should not be able to claim an action with no default, when it doesn't provide one" do
+          expect { 
+            subject.claim(:no_default_to_be_claimed) 
+          }.to raise_error Agent::NoImplementationGiven
+        end
+
+        it "should be able to override a default implementation" do
+          expect { 
+            subject.claim(:with_default_to_be_claimed) do
+              "Overridden Impl"
+            end
+          }.to_not raise_error Agent::NoImplementationGiven
+          subject.perform(:with_default_to_be_claimed).should == "Overridden Impl"
+        end
+
         it "should not be able to claim an action unless the dependencies of that action are also understood"
       end
 
