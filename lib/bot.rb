@@ -18,8 +18,8 @@ class Bot
   end
 
   def move(dest = {})
-    return @location.move unless dest[:to]
-    @location = dest[:to]
+    return @location.move unless dest[:to] #what is this for?
+    @location = dest[:to] #this could be @locaton.move!(content: self, to: dest[:to])
     dest[:to].add_content(self)
     self
   end
