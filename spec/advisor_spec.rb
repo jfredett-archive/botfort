@@ -3,6 +3,26 @@ require 'spec_helper'
 describe Advisable do
   subject { Advisable }
   it { should be_a Module }
+describe Advice do
+  subject { Advice }  
+  it { should respond_to :clear! } 
+  it { should respond_to :find } 
+
+  before do
+    advice(:empty_advice) do
+      "nothing"
+    end
+  end
+
+  describe "empty advice"  do
+    subject { Advice.find(:empty_advice) } 
+
+    it { should be } 
+    it { should respond_to :name }
+    it { should respond_to :actions } 
+    its(:name) { should == :empty_advice } 
+    its(:actions) { should be_nil } 
+  end
 end
 
 =begin
