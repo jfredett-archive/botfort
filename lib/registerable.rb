@@ -11,6 +11,7 @@ module Registerable
       @number = 0
       @registry = {}
     end
+    alias clear! clear
 
     def delete(name)
       @registry.delete(name)
