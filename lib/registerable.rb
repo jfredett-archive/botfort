@@ -1,3 +1,4 @@
+require 'forwardable'
 # Abstracts a class that maintains a internal registry of it's instances
 module Registerable
   def self.included(klass)
@@ -7,39 +8,27 @@ module Registerable
 
   module ClassMethods
     attr_reader :registry, :number
+    extend Forwardable
+
+    attr_reader :registry, :number
+
     def clear
       @number = 0
       @registry = {}
     end
-    alias clear! clear
-
-    def delete(name)
-      @registry.delete(name)
-    end
-
-    def find(name)
-      @registry[name]
-    end
-
-    def exists?(name)
-      @registry.has_key?(name)
-    end
 
     def register(name, instance)
-      name ||= assigned_name
-      @registry[name] = instance
-      name
+      (name ||= assigned_name).tap { |n| @registry[n] = instance }
     end
 
     def update_name(old, new)
-      obj = find(old)
-      delete(old)
-      register(new, obj)
+      register(new, delete(old))
     end
-
-    def count
-      @number
-    end
+    delegate [:delete, :has_key?, :[]] => :@registry
+    alias find []
+    alias clear! clear
+    alias exists? has_key?
+    alias count number
 
     private
 
