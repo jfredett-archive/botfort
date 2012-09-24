@@ -3,8 +3,7 @@ require './lib/registerable'
 class Advice
   include Registerable
 
-  attr_reader :name
-  attr_reader :actions
+  attr_reader :name, :actions
 
   def initialize(name)
     @name = name
@@ -13,8 +12,8 @@ class Advice
 end
 
 module Kernel
-  def advice(name)
-    Advice.new(name)
+  def advice(name, &block)
+    Advice.new(name, &block)
   end
 
   def advise(*_)
