@@ -1,0 +1,251 @@
+# Entity, Agent, and Engines
+
+## Engines
+
+Let's face it, I've commited that cardinal sin of game development, I've started
+to build an engine.
+
+In particular, I sort of knew what I was getting into. The common wisdom is
+"you're wasting time" if you try to build the engine, and indeed, that's my
+goal. I'm interested in the problem and therefore think it's okay to go about on
+this sinful path because it'll be fun (as most sin is).
+
+So, that said, what will make this engine different? Because if you're going to
+damn yourself, you might as well make it different.
+
+### REST
+
+REST -- **Re**presentational **S**tate **T**ransfer -- is the concept of,
+essentially, defining APIs to orient themselves to a S-V-O command structure. A
+request consists of a **S**ubject (endpoint/resource), a **V**erb -- indicating the action
+to execute, and an **O**bject -- the data with which the action should be
+performed. Most commonly, we see this pattern in the context of Web Development,
+and (for better or worse) -- people take it to mean the 'magic 7 controller
+actions'; "Index, Show, New, Create, Edit, Update, Destroy."
+
+These actions aren't REST, they're just one implementaton of a common RESTful
+interface.
+
+Indeed, REST is merely a specification of the schema of messages -- we can use
+it anywhere, and related concepts -- nested resources, most obviously --
+translate well to other fields, like Games.
+
+"But won't HTTP be to slow?"
+
+Indeed, HTTP is a lot slower, but I'm talking about REST, not HTTP. Indeed, I
+have no intention of imposing HTTP upon this engine -- though it may support it
+as a transport. In fact, the primary transport will probably be a unix socket,
+or TCP[1]. Commonly people coerce the HTTP verbs into their REST verbs, but it
+is my intent to support a wider array of verbs, and merely classify them into
+HTTP-able verbs. That is to say, a REST verb may be a POST-like verb (indicating
+that no caching should ever be done), but that verb might be CREATE, HURT, HEAL,
+or etc.
+
+### URIs
+
+With this model, we rapidly see how we can organize a game into a universally
+accessible resource identification scheme. In particular, we may have a URI for
+a resource like:
+
+    /player/1/inventory
+
+being hit with a READ verb, and no data. It is immediately obvious the intent is
+to see the contents of the player's inventory. We might specify a format, too,
+perhaps in the url. If we are accessing this data in-memory, we might specify
+that it provide us with a hash by doing:
+
+  READ, '/player/1/inventory.hash', {}
+
+or as a JSON blob with:
+
+  READ, '/player/1/inventory.json', {}
+
+This structure gives us a convienent way to specify representations of various
+objects, a natural way to talk about various resources 'owned' by a particular
+resource (in this case, players), and indeed a way to generally map entities to
+their logical structures.
+
+### URIs 2.0
+
+So far, I've used the common string-oriented URI notation, but there is no
+reason we can't support a richer DSL for specifying our URIs. At least for
+in-memory transport, or even TCP/Socket transport. In fact, the only reason to
+ensure backwards compatibility w/ standard URI structure is to make the HTTP
+transport nicer.
+
+## Agent
+
+So, we have support already -- through the 'agent' DSL/interface, for a concept
+of an actor in the system. An agent, I'll remind, is a part of the system
+capable of performing an action which may effect itself and the system more
+generally. A bot is an example of an Agent, since it will be constantly moving
+around and doing jobs.
+
+However, we have not specified how we actually execute these actions in the
+context of the game, in particular, we have as yet to specify the actual game
+_loop_, the thing that causes actions to execute and generally does stuff. The
+point here is merely to mention this conundrum, and solve it in the next
+section. However, it is worth mentioning another thing. If we expose the URI
+structure to an Agent, and give it tools to introspect on that structure, we can
+rapidly see how much power we have via the in-memory transport. We can get
+access to other bot objects quickly by implementing each resource action as a
+method primitively available to each Agent. Each Agent may therefore have
+associated scripts which can introspect on the current state of other Agents
+(bots, monsters, what have you), itself, or items nearby (assuming we represent
+location as a resource).
+
+## Entity
+
+Entities are a common term in game development, and our case is no different.
+However, our notion of what entities _are_ does vary slightly with the norm. In
+particular, often Entities are described as 'State Bearing Objects' -- to be
+contrasted, I suppose, with 'Elements' -- things which have no state, and
+generally do not effect gameplay. In our case, the distinction is similar, but
+we add an extra layer to the Entity framework. In addition to Elements and
+Entities, we specify a certain type of Entity, the Agent -- an object which is
+part of the Render loop, but also may effect change in the state of other
+entities. To classify some terms from this game, we might consider a bot to be
+an Agent, an item or location to be an Entity. You will notice that -- in game
+like this, it's difficult to think of something that is _not_ an agent or an
+entity. In an FPS, you might think of various bits of scenery like trees or
+clouds to be Elements, but in a game like this -- everything needs to be
+interactive, and so everything falls between the new distinction we make. 
+
+## Engine / Game Workflow
+
+So, the rough workflow of the engine during the lifecycle of a game is as
+follows:
+
+[see omnigraffle document]
+
+## Asynchrony
+
+Entities, Agents, and Elements all can operate asynchronously and in parallel.
+Race Conditions are generally a game _feature_, so long as we take the
+appropriate approach to the way Agents decide to perform actions. The most
+common 'bad' race condition might be resource-acquisition. An agent might aim to
+create an item at a workshop. In order to do this, the agent needs to claim some
+items `A` and `B`, and a workshop `W`. another agent wants to make another item,
+and needs item `A` and `C` and workshop `U`. The race condition comes when both
+agents identify a particular resource (`A`) and try to claim it simultaneously.
+This problem is alleviated by each agent only ever being able to perform a
+finite amount of actions per 'turn' of the game loop, and ensuring that they
+announce the claim of resources ahead of time. Resource claiming takes place
+continuously during a turn, and a turn is not over until the Agent knows whether
+it's claim was upheld or not. Resources are then allocated for a certain period
+of time (1 'turn' of the Game loop), and may be renewed for some finite limited
+number turns. Resources are allocated first-come-first-serve to the allocation
+pool. The 'winner' of the race condition will therefore gain the rights to the
+particular resource, and have an option to maintain his claim for the amount of
+time that is necessary to acquire all of the other items needed. If -- in the
+interim -- the Agent is removed from the game[2] -- the subsequent renewal claim
+will fail, and the object will be released. Similarly, by limiting the amount of
+time a resource may be claimed, we (albeit nondeterministically) prevent
+deadlock, since a bot will not be able to hold on to a resource it can no longer
+use indefinitely.
+
+By processing all agents asynchronously, we get a really great performance boost
+-- because we can scale to multicore machines easily. With the RESTful design of
+the engine, we can even move those Agents, Entities, or Elements to other
+machines in a cluster, allowing even more resources to be efficiently applied.
+Essentially, the game loop becomes a big Map/Reduce problem.
+
+Entities are even easier to run in parallel (since they won't effect game
+state), but the order in which they update is nontrivial.
+
+Firstly, must wait for Agents to perform their actions, however, as the agents
+perform their actions, they update entities, queuing a list of updates. Two
+agents may therefore enter a race condition wherein they both try to update the
+same entity at the same time. To resolve this, Agents must again declare their
+intent to single 'overseer', which schedules updates of entitys so that they are
+processed if two agents try to update the same entity. In this way, if an agent
+updates an entity, those update actions are queued with the entity, but not
+performed. If another agent updates the same entity, the overseer 'notices' that
+update, tells the entity to immediately perform any pending updates, and then
+allows the new updates to be queued. This leaves us with the same
+'race-condition-as-feature' or 'first-come-first-served' resolution as before.
+
+Finally, Elements may be updated (should they even need to be updated) at any
+time. If there were, for instance, clouds in the game, which are purely
+decorative (and move through the world for aesthetic purposes, updating their
+coordinates each 'turn'), they can be updated freely.
+
+### Ahead-of-time updating / Eager updating
+
+Since all this happens asynchronously, we're free to calculate updates ahead of
+time, essentially letting agents (and especially elements) precompute some
+finite number of frames ahead of time, caching them for later use. This may
+include pathfinding, update requests, resource requests, etc. All of this can be
+built up, so long as we have a method which can clear this cache in the event of
+an unforseen circumstance (to borrow from Dwarf Fortress, we might precompute a
+path of a Dwarf for turns 10-15, but on turn 12 a Goblin invasion occurs, and
+the dwarf must throw away the precomputed paths for turns 13-15 to run away in
+fear).
+
+This technique can allow us to pre-compute the state for virtually all of the
+Elements, most of the Entities, and a few of the Agents. Which means we can
+minimize the amount of uninteresting work we have to do for each turn. This is
+especially important for games with a pausable-real-time setup, since even
+though the player might pause the game, we can keep rendering it and fill up
+those caches 5 or 10 frames in advance.
+
+This is even more powerful still in the area of framelimiting. If we hard limit
+the number of turns/second the game loop can process to something less than
+machine is capable of, we will naturally keep those caches full most of the
+time, only invalidating them occasionally as events occur (events which our
+precomputing scheme will be generating, so we'll know about them). Essentially
+we always remain a few frames ahead of the player, and only a few player actions
+are likely to invalidate any given cache.
+
+This also helps in the cluster-computing scenario, since we can use that
+precomputation to act as a buffer -- each node only sends us it's current frame
+over the wire, but may have many frames in cache, so that when we ask for the
+next frame, we only have to pull it out of cache rather than fully computing it.
+
+## Processing Agents, Entities, and Elements
+
+Each Agent, Entity, and element would live in a subfolder of `app/component`,
+following the conventional name-of-file -> name-of-class as rails. The
+`component` should contain all of the internal game logic for the entity (AI,
+Status management etc) These `components` fufill the 'Model' role in the
+MVC-style framework, and therefore will likely interact with external libraries.
+
+A major deficiency of this framework at present is that it does not provide a
+convienent, specified place for AI routines to live, which are often complicated
+and interact with many components. This is a problem I hope to address in short
+order.
+
+Each Component is associated with a Controller, which lives in `app/controllers`,
+which is conventionally named `<agent_name>_controller` (following the same
+convention as rails for the class name). These controllers define interactions
+with a component, and might include definitions for actions like `CREATE,
+DESTROY, ATTACK, etc`. Notably, actions like `GIVE_ITEM` are not appropriate,
+the action should have no notion of what it's giving, that responsibility falls
+on the endpoint and data attributes of a request[3].
+
+--------------------------------------------------------------------------------
+
+[1] Subject to change at a whim, the goal is to support several schemes of
+interaction w/ the API
+
+[2] 'Removed' being the greatest euphemism of them all
+
+[3] An example request sequence might be:
+
+    CREATE, '/bot/', { location: [1,2] }
+    #=> returns a status "SUCCESS" with the data packet `{ id: 2314 }`
+    GET, '/item_schema/sword'
+    #=> returns a data packet w/ sword information, including a request schema to create that item in the system, a la
+    # { ...
+    #   locations: {
+    #     create: '/item/', { #item schema here },
+    #     ...
+    #   }
+    # }
+    CREATE, '/item/', <schema received from previous request>
+    #=> returns "SUCCESS" with the data packet `{id: 38471}`
+    GIVE, '/bot/2314`, { item: 38471 }
+    #=> returns "SUCCESS" with no data
+    GET, '/bot/items/'
+    #=> returns "SUCCESS" with a datapacket containing all of the items for the
+    # given bot, including the sword we just gace him.
