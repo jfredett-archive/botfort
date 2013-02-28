@@ -10,3 +10,5 @@ group :pry do
 end
 
 gem 'celluloid'
+gem 'rb_termbox'
+gem 'gosu'
