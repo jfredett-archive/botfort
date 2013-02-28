@@ -8,3 +8,5 @@ group :pry do
   gem 'pry-nav'
   gem 'pry-doc'
 end
+
+gem 'celluloid'
