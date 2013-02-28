@@ -116,7 +116,7 @@ interactive, and so everything falls between the new distinction we make.
 So, the rough workflow of the engine during the lifecycle of a game is as
 follows:
 
-[see omnigraffle document]
+[see omnigraffle document](doc/GameEngine.graffle)
 
 ## Asynchrony
 
