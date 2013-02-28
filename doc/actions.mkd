@@ -2,7 +2,7 @@
 
 A bot can take actions, an action is a block of code which instructs the bot to
 do something. This might be moving, performing some action on the current or
-adjacent location, etc. 
+adjacent location, etc.
 
 - An action is the sum of two or more actions, or it is a 'primitive' action,
   eg, movement, construction of an object, etc.
@@ -12,7 +12,7 @@ adjacent location, etc.
       move abs: 0,0             #move to the location 0,0
       move 1,-2                 #move up one square, down two squares
       #execute the action named "cut_tree" -- this may be a built in or a user-defined action
-      cut_tree                  
+      cut_tree
       move abs: 0,0             #move to 0,0
       wait                      #halt actions, report as idle.
     end

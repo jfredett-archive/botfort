@@ -28,12 +28,12 @@ module Agent
     end
 
     def forget_all!
-      @__understood_actions = nil 
+      @__understood_actions = nil
     end
 
     private 
 
-    def __understood_actions 
+    def __understood_actions
       @__understood_actions ||= self.class.send(:__understood_actions).dup
     end
   end

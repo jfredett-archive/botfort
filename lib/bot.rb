@@ -1,11 +1,11 @@
 require './lib/registerable'
 require 'forwardable'
 
-class Bot 
+class Bot
   include Registerable
   extend Forwardable
 
-  delegate [:alive?, :dead?, :health, :health=] => :@health 
+  delegate [:alive?, :dead?, :health, :health=] => :@health
 
   def initialize
     @health = VitalSystem.new
@@ -29,7 +29,7 @@ class Bot
     self
   end
 
-  private 
+  private
 
   def self.basename
     "bot"

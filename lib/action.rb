@@ -20,10 +20,10 @@ class Action
 
   def to_proc
     raise Agent::ActionNotUnderstood unless has_default?
-    interpretation 
+    interpretation
   end
 
-  def has_default? 
+  def has_default?
     @has_default
   end
 end

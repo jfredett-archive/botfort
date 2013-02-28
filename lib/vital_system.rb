@@ -1,15 +1,15 @@
 class VitalSystem
   attr_accessor :health
 
-  def initialize 
+  def initialize
     @health = 1
   end
 
-  def alive? 
+  def alive?
     @health > 0
   end
 
-  def dead? 
+  def dead?
     not alive?
   end
 

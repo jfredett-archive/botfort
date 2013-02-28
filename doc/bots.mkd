@@ -25,7 +25,7 @@ A bot is a little automaton, it is capable of performing
 
   The distance between A and B is _not_ 3 spaces (inclusive), it is in fact 8
   spaces, since "light" cannot travel between walls. The "rate of transmission"
-  is then based on some "speed of light", so if the speed of light was 5 spaces 
+  is then based on some "speed of light", so if the speed of light was 5 spaces
   per turn, then any transmission from A to B would take at least 2 turns --
   during which B might move, yeilding the potential to have the message need to
   recalculate how many more turns it would take to arrive. (Messages should be
@@ -33,7 +33,7 @@ A bot is a little automaton, it is capable of performing
 
   It is presumed that bots do not exceed the S.O.L., this presumption may be fun
   to violate.
- 
+
   This message-passing system would (ideally) allow for a sort of
   pseudo-object-oriented approach to bots via complex instincts which involve
   message passing, for instance, I might register an instinct with all bots
@@ -125,13 +125,13 @@ sort of "structural integrity" -- possibly enhanced by shields/whatever -- which
 can be damaged by mobs. when the structural integrity of the chassis has been
 reduced to 0, the inner workings are expose, these also have structural
 integrity, but when they break, they cease their function, thus rendering the
-victim incapable of survival. 
+victim incapable of survival.
 
 When the chassis breaks the cargo may start falling out.
 
 Depending on the bot, it may be able to continue if different parts of the
 innerworkings are still present. For instance, a 4-wheeled bot can probably limp
-away on 3, or even 2 wheels. 
+away on 3, or even 2 wheels.
 
 There should be potential for safeguarding internal components separately. Eg, I
 have an armored CPU area, etc.
@@ -140,7 +140,7 @@ have an armored CPU area, etc.
 
 I've already mentioned components in the "Upkeep" section, but generally, there
 are two kinds of components -- primary components (like CPUs, Chassis, Wheels,
-etc), and secondary components (Fans, Heatsinks, etc). 
+etc), and secondary components (Fans, Heatsinks, etc).
 
 Primary components should be kept relatively few, perhaps 5-7 total components.
 Not all are necessary for every bot, for instance, a bot might not need wheels
@@ -153,7 +153,7 @@ one equation based on simple statistics of the item + it's secondary components.
 Primary components have a "degradation factor" and a "total-decay" value, the
 latter specifies the total amount of degradation points that a unit can
 withstand before breaking. The former specifies the effect it has on it's
-primary function. 
+primary function.
 
 Secondary components are "attached" to certain "types" of components. For
 instance, a fan or heatsink might be attached to any "heat" producing component
@@ -184,7 +184,7 @@ particular:
   minor mutations
 
 When a bot goes rampant, it is up to the player to decide what to do. In some
-cases, it is harmless, in others, deadly. 
+cases, it is harmless, in others, deadly.
 
 ##Possible components for bots:
 
@@ -197,9 +197,9 @@ I suspect this list will grow.
     - CPU processing power / turn
   * degrades based on:
     - process units used / turn
-    - "heat" 
-      ** eg, 
-          load = process units used / process units max 
+    - "heat"
+      ** eg,
+          load = process units used / process units max
           heat = average load over `n` turns, adjusting for falloff
 
         That is, the more of a CPU you use for longer should increase the wear
@@ -222,7 +222,7 @@ I suspect this list will grow.
     - cargo weight carried over distance modified by terrain
       ** eg, `sum(weight * cost(square)) for each square travelled`
 
-- Fans/Heatsinks 
+- Fans/Heatsinks
   * contributes to:
     - Reduction in CPU degradation
   * degrades based on:
@@ -237,33 +237,37 @@ I suspect this list will grow.
   * degrades based on:
     - CPU usage + extra when it is actually being used
 
-- Scanners 
+- Scanners
   * contributes to:
     - Line-of-sight range, ability to see through obstacles, etc depending on
       type
   * degrades based on:
     - Constant over time
 
-- Weapons 
+- Weapons
   * contributes to:
     - Killing stuff, does not use ammo naturally, possible secondary component
       is secondary "ammo" items which enhance damage
   * degrades based on:
     - Use
 
-- Battery 
+- Battery
   * contributes to:
     - general operation, limiter for number of components (need batteries to use
       components
   * degrades based on:
     - rate dependent on number of batteries on the device. more batteries ==
       faster decay
-    
-  
----schema---
-- 
-  * contributes to:
-  * degrades based on:
+
+
+-------------------
+
+Schema for the above:
+
+    ---schema---
+    -
+      * contributes to:
+      * degrades based on:
 
 
 

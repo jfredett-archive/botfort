@@ -15,17 +15,17 @@ before an Agent runs a command, he checks to see if he supports
     aborts -- aborts the current Action, no flag raised
     ignores -- skips the particular command in the action, and moves on
 
-there is a Command 'claim' to register new Commands 
-  every agent responds to "claim"  
+there is a Command 'claim' to register new Commands
+  every agent responds to "claim"
   if the agent already responds to the given command, then nothing happens
 there is a Command 'forget' to unregister a Command
   every agent responds to 'forget'
   if the agent doesn't respond to the given command, then nothing happens
-    
+
 claiming a command requires a name and a block, the block provides the
 implementation of the command.
   eg, a bot might do:
-    
+
     claim :move do |args*, opts = {}|
       #implement move
     end
@@ -59,7 +59,7 @@ Claiming a command twice overrides the previous definition, eg:
     end
 
 would put "2" to STDOUT when it gets run.
- 
+
 There should be a way for an individual instance of an Agent to claim commands
 
 ##
@@ -83,7 +83,7 @@ I should be able to do:
 
     Action.find(:foo).dependencies
 
-and have a list of 
+and have a list of
 
     { :bar => Action.find(bar),
       :baz => nil,

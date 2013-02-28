@@ -1,32 +1,32 @@
 # Abstracts a class that maintains a internal registry of it's instances
-module Registerable 
+module Registerable
   def self.included(klass)
     klass.extend self::ClassMethods
     klass.clear
   end
 
   module ClassMethods
-    attr_reader :registry, :number 
+    attr_reader :registry, :number
     def clear
-      @number = 0 
+      @number = 0
       @registry = {}
     end
 
     def delete(name)
-      @registry.delete(name) 
+      @registry.delete(name)
     end
 
     def find(name)
-      @registry[name] 
+      @registry[name]
     end
 
     def exists?(name)
-      @registry.has_key?(name) 
+      @registry.has_key?(name)
     end
 
     def register(name, instance)
       name ||= assigned_name
-      @registry[name] = instance 
+      @registry[name] = instance
       name
     end
 
@@ -37,10 +37,10 @@ module Registerable
     end
 
     def count
-      @number 
+      @number
     end
 
-    private 
+    private
 
     def assigned_name
       @number += 1

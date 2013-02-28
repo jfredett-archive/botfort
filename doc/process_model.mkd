@@ -22,7 +22,7 @@ Given the presence of sharding (in the database sense) servers, it may be that
 we need a two-level heirarchy, one for managing concurrency (a global lock
 store), and one for the provision of labor to the slave processes.
 
-###World 
+###World
 
 The world is the god of the game-world. It abstracts the representation of the
 game world, it is responsible for providing chunks of the game world to slaves
@@ -48,7 +48,7 @@ Perhaps this model (calculate a path which is optimal for <max_speed> of the
 object moving and then registering another WU to move the rest of the way, would
 help eliminate some complexity in pathfinding.
 
-- Combat resolution 
+- Combat resolution
 
 Execute combat for a bot and an enemy, return state of bot when finished.
 
