@@ -223,6 +223,84 @@ DESTROY, ATTACK, etc`. Notably, actions like `GIVE_ITEM` are not appropriate,
 the action should have no notion of what it's giving, that responsibility falls
 on the endpoint and data attributes of a request[3].
 
+### Aside: Defining Verbs
+
+In our RESTful world, under our MVC-esque stack, it's clear that Entities,
+Elements, and Agents all fufill some facet of the 'model' role, and the views
+will naturally be the data-representation given as a product of a request to an
+endpoint. The question therefore remains -- what is a Controller?
+
+I think we can split this into two parts, the Verb and the AI. The latter is the
+topic of the parent section more directly, this section is concerned with verbs.
+
+I cannot know ahead of time what verbs will be necessary, merely that I will
+need to specify verbs with a typical interpretation. That is, `CREATE` is
+likely to be supported by many models, but each will support it differently. To
+that end, there should be an `app/verbs` directory, which provides a
+conventional file-name/class-name mapping, so that `app/verbs/create.rb` maps to
+the `CREATE` command. Each command is defined in a DSL which specifies what
+arguments it takes, and what type they must be. It might look like:
+
+
+    command :GIVE do
+      accepts Player, by: :id
+
+      accepts one_of: Item, StatusEffect, by: :id
+
+      execute do |player, givable|
+        player.give(givable)
+      end
+    end
+
+or
+
+    command :HURT do
+      accepts any: :hurtable?, as: :target, by: [:class, :id]
+      accepts Integer, as: amount, by: :value
+      accepts :source, by: [:class, :id]
+
+      # this bit of the API is a kindof gross, the idea is that we define lookup
+      # which is used by the execute part of the DSL
+      helper "source", for: :source do |source|
+        source[:class].find(source[:id])
+      end
+
+      helper "target", for: :target do |target|
+        target[:class].find(target[:id])
+      end
+
+      before do |target, amount, source|
+        puts "#{target.name} was hurt by #{source.name} for #{amount}"
+      end
+
+      execute do |target, amount, source|
+        target.hurt_for(amount)
+      end
+    end
+
+Further, it should be possible to define composite verbs, or moreover to easily
+make one verb 'call out' to another. Essentially this causes an asynchronous
+continuation of the action.
+
+The before/after hooks may be overkill, but also may be useful when implementing
+schemas, which can be done simply by defining a proxy method, eg:
+
+    def my_command(name)
+      command(name) do
+        yield
+
+        after { <something> }
+      end
+    end
+
+This would allow you to specify a 'class' of verbs available to a user. You
+would load them from `lib/<somewhere>`.
+
+It may also be useful to have a `before :initialize` hook, for initializers that
+need to run after the main set of inits but before the verb is defined.
+
+
+
 --------------------------------------------------------------------------------
 
 [1] Subject to change at a whim, the goal is to support several schemes of
